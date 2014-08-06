@@ -59,6 +59,12 @@
     </select>
   </f:entry>
 
+  <f:optionalBlock name="showAvatars" title="${%Show Avatars}" checked="${it.showAvatars}">
+    <f:entry title="${%Show Culprit Name}">
+      <f:checkbox name="showCulpritName"  checked="${it.showCulpritName}"/>
+    </f:entry>
+  </f:optionalBlock>
+
   </f:section>
 
   <script>

@@ -1,11 +1,12 @@
 package com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.syntacticsugar;
 
+import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.User;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.plugins.bfa.AnalysedTest;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.plugins.claim.ClaimedTest;
 import com.sonyericsson.jenkins.plugins.bfa.model.FailureCauseBuildAction;
+
 import hudson.model.AbstractBuild;
 import hudson.model.Result;
-import hudson.model.User;
 import hudson.plugins.claim.ClaimBuildAction;
 import hudson.scm.ChangeLogSet;
 
@@ -54,7 +55,7 @@ public class BuildStateRecipe {
         return this;
     }
 
-    public BuildStateRecipe withChangesFrom(String... authors) {
+    public BuildStateRecipe withChangesFrom(User... authors) {
         ChangeLogSet changeSet = changeSetBasedOn(entriesBy(authors));
         when(build.getChangeSet()).thenReturn(changeSet);
 
@@ -65,14 +66,14 @@ public class BuildStateRecipe {
         return this;
     }
 
-    public BuildStateRecipe succeededThanksTo(String... authors) {
+    public BuildStateRecipe succeededThanksTo(User... authors) {
         finishedWith(Result.SUCCESS);
         withChangesFrom(authors);
 
         return this;
     }
 
-    public BuildStateRecipe wasBrokenBy(String... culprits) {
+    public BuildStateRecipe wasBrokenBy(User... culprits) {
         finishedWith(Result.FAILURE);
         withChangesFrom(culprits);
 
@@ -124,7 +125,7 @@ public class BuildStateRecipe {
         return this;
     }
 
-    public BuildStateRecipe andWasClaimedBy(String aPotentialHero, String reason) {
+    public BuildStateRecipe andWasClaimedBy(User aPotentialHero, String reason) {
         final ClaimBuildAction action = claimBuildAction(aPotentialHero, reason);
         when(build.getAction(ClaimBuildAction.class)).thenReturn(action);
 
@@ -143,15 +144,15 @@ public class BuildStateRecipe {
     }
 
 
-    private List<ChangeLogSet.Entry> entriesBy(String... authors) {
+    private List<ChangeLogSet.Entry> entriesBy(User... authors) {
         List<ChangeLogSet.Entry> entries = new ArrayList<ChangeLogSet.Entry>();
 
-        for (String name : authors) {
-            User author = mock(User.class);
+        for (User author : authors) {
+            hudson.model.User jenkinsAuthor = mock(hudson.model.User.class);
             ChangeLogSet.Entry entry = mock(ChangeLogSet.Entry.class);
 
-            when(author.getFullName()).thenReturn(name);
-            when(entry.getAuthor()).thenReturn(author);
+            when(jenkinsAuthor.getFullName()).thenReturn(author.getName());
+            when(entry.getAuthor()).thenReturn(jenkinsAuthor);
 
             entries.add(entry);
         }

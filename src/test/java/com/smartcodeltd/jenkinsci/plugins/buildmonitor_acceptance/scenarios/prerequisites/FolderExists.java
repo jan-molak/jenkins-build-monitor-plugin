@@ -2,7 +2,6 @@ package com.smartcodeltd.jenkinsci.plugins.buildmonitor_acceptance.scenarios.pre
 
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor_acceptance.scenarios.Context;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,7 +18,7 @@ public class FolderExists implements Prerequisite {
     }
 
     @Override
-    public Context accept(Context context) throws IOException {
+    public Context accept(Context context) throws Exception {
         Context currentContext = context.createFolder(name);
 
         for(Prerequisite p : prerequisites) {

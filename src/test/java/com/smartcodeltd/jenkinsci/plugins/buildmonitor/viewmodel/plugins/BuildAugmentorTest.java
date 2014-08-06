@@ -1,5 +1,6 @@
 package com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.plugins;
 
+import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.User;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.plugins.bfa.Analysed;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.plugins.bfa.Analysis;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.plugins.bfa.NotAnalysed;
@@ -7,8 +8,10 @@ import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.plugins.claim.C
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.plugins.claim.Claimed;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.plugins.claim.NotClaimed;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.syntacticsugar.BuildStateRecipe;
+
 import hudson.model.Result;
 import hudson.model.Run;
+
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
@@ -25,7 +28,7 @@ public class BuildAugmentorTest {
     private BuildAugmentor augmentor = new BuildAugmentor();
 
     private Run<?, ?> plainBuild = a(build());
-    private Run<?, ?> claimedBuild = a(build().finishedWith(Result.FAILURE).andWasClaimedBy(AUTHOR, REASON));
+    private Run<?, ?> claimedBuild = a(build().finishedWith(Result.FAILURE).andWasClaimedBy(new User(AUTHOR), REASON));
     private Run<?, ?> failedBuild = a(build().finishedWith(Result.FAILURE).andKnownFailures(FLUX_CAPACITOR_FAILED_AGAIN));
 
     /*

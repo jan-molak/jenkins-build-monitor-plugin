@@ -3,15 +3,17 @@ package com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.plugins.BuildAugmentor;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.plugins.bfa.Analysis;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.plugins.claim.Claim;
+import hudson.Functions;
 import hudson.model.AbstractBuild;
 import hudson.model.Result;
 import hudson.model.Run;
-import hudson.model.User;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import jenkins.model.Jenkins;
 
 public class BuildView implements BuildViewModel {
 
@@ -102,15 +104,15 @@ public class BuildView implements BuildViewModel {
     }
 
     @Override
-    public Set<String> culprits() {
-        Set<String> culprits = new HashSet<String>();
+    public Set<User> culprits() {
+        Set<User> culprits = new HashSet<User>();
 
         if (build instanceof AbstractBuild<?, ?>) {
             AbstractBuild<?, ?> jenkinsBuild = (AbstractBuild<?, ?>) build;
 
             if (! (isRunning(jenkinsBuild))) {
-                for (User culprit : jenkinsBuild.getCulprits()) {
-                    culprits.add(culprit.getFullName());
+                for (hudson.model.User culprit : jenkinsBuild.getCulprits()) {
+                    culprits.add(new User(culprit.getFullName(), Jenkins.getInstance() != null ? Functions.getAvatar(culprit, "48x48") : null));
                 }
             }
         }

@@ -6,18 +6,16 @@ import com.smartcodeltd.jenkinsci.plugins.buildmonitor_acceptance.scenarios.prer
 import org.jvnet.hudson.test.JenkinsRule;
 import org.openqa.selenium.WebDriver;
 
-import java.io.IOException;
-
 public class Scenario {
     public static Scenario using(JenkinsRule jenkins, WebDriver browser) {
         return new Scenario(jenkins, browser);
     }
 
-    public Scenario WhenIHave(Prerequisite... prerequisites) throws IOException {
+    public Scenario WhenIHave(Prerequisite... prerequisites) throws Exception {
         return IHave(prerequisites);
     }
 
-    public Scenario IHave(Prerequisite... prerequisites) throws IOException {
+    public Scenario IHave(Prerequisite... prerequisites) throws Exception {
         Context currentContext = new Context(new JenkinsAdapter(jenkins.getInstance()));
 
         for(Prerequisite prerequisite : prerequisites) {

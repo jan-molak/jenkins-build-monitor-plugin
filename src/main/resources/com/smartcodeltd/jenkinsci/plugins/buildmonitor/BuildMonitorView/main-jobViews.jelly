@@ -18,7 +18,10 @@
                     <li data-ng-show="job.claimed">Claimed by <strong>{{ job.claimAuthor }}</strong>: {{ job.claimReason }}</li>
                 </ul>
                 <ul ng-if="job.shouldIndicateCulprits" class="culprits">
-                    <li data-ng-repeat="name in job.culprits">{{name}}</li>
+                    <li data-ng-repeat="culprit in job.culprits" ng-class="job.showAvatars &amp;&amp; 'avatar'">
+                        <img ng-if="job.showAvatars" ng-src="{{culprit.avatar}}" title="{{culprit.name}}"/>
+                        <div ng-if="!job.showAvatars || job.showCulpritName">{{culprit.name}}</div>
+                    </li>
                 </ul>
                 <ul ng-if="job.hasKnownFailures" class="failures">
                     <li data-ng-repeat="name in job.knownFailures">{{name}}</li>

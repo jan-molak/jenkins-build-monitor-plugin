@@ -19,7 +19,7 @@ public interface BuildViewModel {
     public boolean hasPreviousBuild();
     public BuildViewModel previousBuild();
 
-    public Set<String> culprits();
+    public Set<User> culprits();
 
     boolean isClaimed();
     String claimant();

@@ -22,21 +22,22 @@ public class JobView {
     private final Job<?, ?> job;
     private final BuildAugmentor augmentor;
     private final RelativeLocation relative;
+    private JobViewConfiguration configuration;
 
     public static JobView of(Job<?, ?> job) {
-        return new JobView(job, new BuildAugmentor(), RelativeLocation.of(job), new Date());
+        return new JobView(job, new BuildAugmentor(), RelativeLocation.of(job), new Date(), new JobViewConfiguration());
     }
 
-    public static JobView of(Job<?, ?> job, BuildAugmentor augmentor) {
-        return new JobView(job, augmentor, RelativeLocation.of(job), new Date());
+    public static JobView of(Job<?, ?> job, BuildAugmentor augmentor, JobViewConfiguration configuration) {
+        return new JobView(job, augmentor, RelativeLocation.of(job), new Date(), configuration);
     }
 
     public static JobView of(Job<?, ?> job, RelativeLocation location) {
-        return new JobView(job, new BuildAugmentor(), location, new Date());
+        return new JobView(job, new BuildAugmentor(), location, new Date(), new JobViewConfiguration());
     }
 
     public static JobView of(Job<?, ?> job, Date systemTime) {
-        return new JobView(job, new BuildAugmentor(), RelativeLocation.of(job), systemTime);
+        return new JobView(job, new BuildAugmentor(), RelativeLocation.of(job), systemTime, new JobViewConfiguration());
     }
 
     @JsonProperty
@@ -108,8 +109,8 @@ public class JobView {
     }
 
     @JsonProperty
-    public Set<String> culprits() {
-        Set<String> culprits = new HashSet<String>();
+    public List<User> culprits() {
+        Set<User> culprits = new HashSet<User>();
 
         BuildViewModel build = lastBuild();
         // todo: consider introducing a BuildResultJudge to keep this logic in one place
@@ -123,7 +124,28 @@ public class JobView {
             build = build.previousBuild();
         };
 
-        return culprits;
+        List<User> culpritList = new ArrayList<User>(culprits);
+        sortUsers(culpritList);
+        return culpritList;
+    }
+
+    private void sortUsers(List<User> users) {
+        Collections.sort(users, new Comparator<User>() {
+            @Override
+            public int compare(User o1, User o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+    }
+
+    @JsonProperty
+    public boolean showAvatars() {
+        return configuration.getShowAvatars();
+    }
+
+    @JsonProperty
+    public boolean showCulpritName() {
+        return showAvatars() && configuration.getShowCulpritName();
     }
 
     @JsonProperty
@@ -156,11 +178,12 @@ public class JobView {
     }
 
 
-    private JobView(Job<?, ?> job, BuildAugmentor augmentor, RelativeLocation relative, Date systemTime) {
+    private JobView(Job<?, ?> job, BuildAugmentor augmentor, RelativeLocation relative, Date systemTime, JobViewConfiguration configuration) {
         this.job        = job;
         this.augmentor  = augmentor;
         this.systemTime = systemTime;
         this.relative   = relative;
+        this.configuration = configuration;
     }
 
     private BuildViewModel lastBuild() {

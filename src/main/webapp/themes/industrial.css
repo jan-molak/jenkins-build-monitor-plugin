@@ -206,10 +206,12 @@ h2 {
 
 .build-monitor .meta li { display: inline-block; }
 .build-monitor .meta .culprits li { padding-right:0; margin-right:0.5em; }
-.build-monitor .meta .culprits li:after { content: ","; }
-.build-monitor .meta .culprits li:last-child:after { content: ""; }
+.build-monitor .meta .culprits li img { border-radius: 50%; width: 3em; height: 3em; }
+.build-monitor .meta .culprits li:not(.avatar) div { display: inline-block; }
+.build-monitor .meta .culprits li:not(.avatar):after { content: ","; }
+.build-monitor .meta .culprits li:not(.avatar):last-child:after { content: ""; }
 
-.build-monitor ul.culprits li:first-child:before {
+.build-monitor ul.culprits li:not(.avatar):first-child:before {
     content: "Possible Culprits: ";
 }
 

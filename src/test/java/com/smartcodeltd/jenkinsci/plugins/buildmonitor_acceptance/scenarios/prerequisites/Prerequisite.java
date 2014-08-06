@@ -2,8 +2,6 @@ package com.smartcodeltd.jenkinsci.plugins.buildmonitor_acceptance.scenarios.pre
 
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor_acceptance.scenarios.Context;
 
-import java.io.IOException;
-
 public interface Prerequisite {
-    Context accept(Context context) throws IOException;
+    Context accept(Context context) throws Exception;
 }

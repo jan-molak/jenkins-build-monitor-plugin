@@ -76,7 +76,7 @@ public class JobStateRecipe {
 
         // pick the first build from the build history and make it the "last build"
         if (buildHistory.size() == 1) {
-            when(job.getLastBuild()).thenReturn(buildHistory.pop());
+            when((AbstractBuild)job.getLastBuild()).thenReturn(buildHistory.pop());
         }
 
         return job;

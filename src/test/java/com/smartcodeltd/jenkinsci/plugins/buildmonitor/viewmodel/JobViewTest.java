@@ -9,6 +9,7 @@ import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.syntacticsugar.
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.syntacticsugar.JobStateRecipe;
 import hudson.model.Job;
 import hudson.model.Result;
+import org.hamcrest.core.IsCollectionContaining;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -22,7 +23,6 @@ import static com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.syntacti
 import static hudson.model.Result.*;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -302,8 +302,9 @@ public class JobViewTest {
     @Test
     public void should_describe_the_job_as_claimed_if_someone_claimed_last_build_failures() {
         view = JobView.of(
-                a(job().whereTheLast(build().finishedWith(FAILURE).andWasClaimedBy("Adam", "sorry, I broke it, fixing now"))),
-                augmentedWith(Claim.class)
+                a(job().whereTheLast(build().finishedWith(FAILURE).andWasClaimedBy(new User("Adam"), "sorry, I broke it, fixing now"))),
+                augmentedWith(Claim.class),
+                new JobViewConfiguration()
                );
 
         assertThat(view.status(), containsString("claimed"));
@@ -325,39 +326,39 @@ public class JobViewTest {
 
     @Test
     public void should_know_who_broke_the_build() {
-        view = JobView.of(a(job().whereTheLast(build().wasBrokenBy("Adam", "Ben"))));
+        view = JobView.of(a(job().whereTheLast(build().wasBrokenBy(new User("Adam"), new User("Ben")))));
 
         assertThat(view.culprits(), hasSize(2));
-        assertThat(view.culprits(), hasItems("Adam", "Ben"));
+        assertThat(view.culprits(), hasItems(new User("Adam"), new User("Ben")));
     }
 
     @Test
     public void should_know_who_has_been_committing_over_broken_build() {
         view = JobView.of(a(job().
-                whereTheLast(build().wasBrokenBy("Adam")).
-                andThePrevious(build().wasBrokenBy("Ben", "Connor")).
-                andThePrevious(build().wasBrokenBy("Daniel")).
-                andThePrevious(build().succeededThanksTo("Errol"))));
+                whereTheLast(build().wasBrokenBy(new User("Adam"))).
+                andThePrevious(build().wasBrokenBy(new User("Ben"), new User("Connor"))).
+                andThePrevious(build().wasBrokenBy(new User("Daniel"))).
+                andThePrevious(build().succeededThanksTo(new User("Errol")))));
 
         assertThat(view.culprits(), hasSize(4));
-        assertThat(view.culprits(), hasItems("Adam", "Ben", "Connor", "Daniel"));
-        assertThat(view.culprits(), not(hasItem("Errol")));
+        assertThat(view.culprits(), hasItems(new User("Adam"), new User("Ben"), new User("Connor"), new User("Daniel")));
+        assertThat(view.culprits(), not(hasItem(new User("Errol"))));
     }
 
     @Test
     public void should_only_mention_each_culprit_once() {
         view = JobView.of(a(job().
-                whereTheLast(build().wasBrokenBy("Adam")).
-                andThePrevious(build().wasBrokenBy("Adam", "Ben")).
-                andThePrevious(build().wasBrokenBy("Ben", "Connor"))));
+                whereTheLast(build().wasBrokenBy(new User("Adam"))).
+                andThePrevious(build().wasBrokenBy(new User("Adam"), new User("Ben"))).
+                andThePrevious(build().wasBrokenBy(new User("Ben"), new User("Connor")))));
 
         assertThat(view.culprits(), hasSize(3));
-        assertThat(view.culprits(), hasItems("Adam", "Ben", "Connor"));
+        assertThat(view.culprits(), hasItems(new User("Adam"), new User("Ben"), new User("Connor")));
     }
 
     @Test
     public void should_not_mention_any_culprits_if_the_build_was_successful() {
-        view = JobView.of(a(job().whereTheLast(build().succeededThanksTo("Adam"))));
+        view = JobView.of(a(job().whereTheLast(build().succeededThanksTo(new User("Adam")))));
 
         assertThat(view.culprits(), hasSize(0));
     }
@@ -366,7 +367,7 @@ public class JobViewTest {
     public void should_not_mention_any_culprits_if_the_build_was_successful_and_is_still_running() {
         view = JobView.of(a(job().
                 whereTheLast(build().isStillBuilding()).
-                andThePrevious(build().succeededThanksTo("Adam"))));
+                andThePrevious(build().succeededThanksTo(new User("Adam")))));
 
         assertThat(view.culprits(), hasSize(0));
     }
@@ -374,8 +375,9 @@ public class JobViewTest {
     @Test
     public void should_indicate_culprits_if_the_build_is_failing_and_not_claimed() {
         view = JobView.of(a(job().
-                        whereTheLast(build().wasBrokenBy("Adam"))),
-                augmentedWith(Claim.class));
+                        whereTheLast(build().wasBrokenBy(new User("Adam")))),
+                augmentedWith(Claim.class),
+                new JobViewConfiguration());
 
         assertThat(view.shouldIndicateCulprits(), is(true));
         assertThat(view.culprits(), hasSize(1));
@@ -384,8 +386,9 @@ public class JobViewTest {
     @Test
     public void should_not_indicate_any_culprits_if_the_build_was_failing_but_is_now_claimed() {
         view = JobView.of(a(job().
-                whereTheLast(build().wasBrokenBy("Adam").andWasClaimedBy("Ben", "Helping out Adam"))),
-                augmentedWith(Claim.class));
+                whereTheLast(build().wasBrokenBy(new User("Adam")).andWasClaimedBy(new User("Ben"), "Helping out Adam"))),
+                augmentedWith(Claim.class),
+                new JobViewConfiguration());
 
         assertThat(view.shouldIndicateCulprits(), is(false));
         assertThat(view.culprits(), hasSize(1));
@@ -412,16 +415,17 @@ public class JobViewTest {
 
     @Test
     public void should_know_if_a_failing_build_has_been_claimed() throws Exception {
-        String ourPotentialHero = "Adam",
-               theReason        = "I broke it, sorry, fixing now";
+        User ourPotentialHero = new User("Adam");
+        String theReason = "I broke it, sorry, fixing now";
 
         view = JobView.of(
                 a(job().whereTheLast(build().finishedWith(FAILURE).andWasClaimedBy(ourPotentialHero, theReason))),
-                augmentedWith(Claim.class)
+                augmentedWith(Claim.class),
+                new JobViewConfiguration()
         );
 
         assertThat(view.isClaimed(),      is(true));
-        assertThat(view.claimAuthor(),       is(ourPotentialHero));
+        assertThat(view.claimAuthor(),       is(ourPotentialHero.getName()));
         assertThat(view.claimReason(), is(theReason));
     }
 
@@ -431,10 +435,11 @@ public class JobViewTest {
 
         view = JobView.of(
                 a(job().whereTheLast(build().finishedWith(FAILURE).andKnownFailures(rogueAi))),
-                augmentedWith(Analysis.class));
+                augmentedWith(Analysis.class),
+                new JobViewConfiguration());
 
         assertThat(view.hasKnownFailures(), is(true));
-        assertThat(view.knownFailures(), contains(rogueAi));
+        assertThat(view.knownFailures(), IsCollectionContaining.hasItem(rogueAi));
     }
 
     @Test

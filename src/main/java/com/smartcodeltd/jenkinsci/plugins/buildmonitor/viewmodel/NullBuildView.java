@@ -59,8 +59,8 @@ public class NullBuildView implements BuildViewModel {
     }
 
     @Override
-    public Set<String> culprits() {
-        return new HashSet<String>();
+    public Set<User> culprits() {
+        return new HashSet<User>();
     }
 
     @Override

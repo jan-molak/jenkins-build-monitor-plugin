@@ -3,7 +3,6 @@ package com.smartcodeltd.jenkinsci.plugins.buildmonitor_acceptance.scenarios.pre
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor_acceptance.scenarios.Context;
 import hudson.tasks.Builder;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +26,7 @@ public class FreestyleProjectExists implements Prerequisite {
     }
 
     @Override
-    public Context accept(Context context) throws IOException {
+    public Context accept(Context context) throws Exception {
         context.createFreestyleProject(name, builders, shouldExecute);
 
         return context;

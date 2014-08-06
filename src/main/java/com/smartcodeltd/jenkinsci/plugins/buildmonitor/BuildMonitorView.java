@@ -25,6 +25,7 @@ package com.smartcodeltd.jenkinsci.plugins.buildmonitor;
 
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.order.ByName;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.JobView;
+import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.JobViewConfiguration;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.plugins.BuildAugmentor;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.plugins.claim.Claim;
 import hudson.Extension;
@@ -59,7 +60,11 @@ import static hudson.Util.filter;
  */
 public class BuildMonitorView extends ListView {
 
-    /**
+    private boolean showAvatars;
+
+    private boolean showCulpritName;
+
+	/**
      * @param name  Name of the view
      */
     @DataBoundConstructor
@@ -99,6 +104,8 @@ public class BuildMonitorView extends ListView {
         super.submit(req);
 
         String requestedOrdering = req.getParameter("order");
+        showAvatars = req.getParameter("showAvatars") != null;
+        showCulpritName = req.getParameter("showCulpritName") != null;
 
         try {
             order = orderIn(requestedOrdering);
@@ -157,7 +164,10 @@ public class BuildMonitorView extends ListView {
         Collections.sort(projects, currentOrderOrDefault());
 
         for (AbstractProject project : projects) {
-            jobs.add(JobView.of(project, withAugmentationsIfTheyArePresent()));
+            final JobViewConfiguration config = new JobViewConfiguration();
+            config.setShowAvatars(showAvatars);
+            config.setShowCulpritName(showCulpritName);
+            jobs.add(JobView.of(project, withAugmentationsIfTheyArePresent(), config));
         }
 
         return jobs;
@@ -166,4 +176,8 @@ public class BuildMonitorView extends ListView {
     private BuildAugmentor withAugmentationsIfTheyArePresent() {
         return BuildAugmentor.fromDetectedPlugins();
     }
+
+    public boolean getShowAvatars() {
+		return showAvatars;
+	}
 }
