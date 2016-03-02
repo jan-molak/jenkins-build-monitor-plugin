@@ -43,6 +43,34 @@ public final class BuildMonitorDescriptor extends ViewDescriptor {
         return true;
     }
 
+    @SuppressWarnings("unused") // used in the configure-entries.jelly form
+    public FormValidation doCheckFontSize(@QueryParameter String value) {
+        try {
+            float val = Float.parseFloat(value);
+            if (val >= 0.3 && val <= 2) {
+                return FormValidation.ok();
+            } else {
+                return FormValidation.error("Must be >= 0.3 and <= 2");
+            }
+        } catch (NumberFormatException e) {
+            return FormValidation.error("Must be float");
+        }
+    }
+
+    @SuppressWarnings("unused") // used in the configure-entries.jelly form
+    public FormValidation doCheckNumberOfColumns(@QueryParameter String value) {
+        try {
+            int val = Integer.parseInt(value);
+            if (val >= 1 && val <= 8) {
+                return FormValidation.ok();
+            } else {
+                return FormValidation.error("Must be >= 1 and <= 8");
+            }
+        } catch (NumberFormatException e) {
+            return FormValidation.error("Must be integer");
+        }
+    }
+
     private boolean permissionToCollectAnonymousUsageStatistics = true;
 
     public boolean getPermissionToCollectAnonymousUsageStatistics() {

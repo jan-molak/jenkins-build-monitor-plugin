@@ -80,6 +80,26 @@ public class BuildMonitorView extends ListView {
         return currentConfig().getOrder().getClass().getSimpleName();
     }
 
+    @SuppressWarnings("unused") // used in the configure-entries.jelly form
+    public String currentFontSize() {
+        return String.valueOf(currentConfig().getFontSize());
+    }
+
+    @SuppressWarnings("unused") // used in the configure-entries.jelly form
+    public String currentNumberOfColumns() {
+        return String.valueOf(currentConfig().getNumberOfColumns());
+    }
+
+    @SuppressWarnings("unused") // used in the configure-entries.jelly form
+    public boolean isColourBlindMode() {
+        return currentConfig().isColourBlindMode();
+    }
+
+    @SuppressWarnings("unused") // used in the configure-entries.jelly form
+    public String getColourBlindModeValue() {
+        return isColourBlindMode() ? "1" : "0";
+    }
+
     private static final BuildMonitorInstallation installation = new BuildMonitorInstallation();
 
     @SuppressWarnings("unused") // used in index.jelly
@@ -95,11 +115,45 @@ public class BuildMonitorView extends ListView {
     @Override
     protected void submit(StaplerRequest req) throws ServletException, IOException, FormException {
         super.submit(req);
-
-        String requestedOrdering = req.getParameter("order");
-
         title = req.getParameter("title");
 
+        submitFontSize(req);
+        submitNumberOfColumns(req);
+        submitColourBlindMode(req);
+        submitOrder(req);
+    }
+
+    private void submitFontSize(StaplerRequest req) throws FormException {
+        String fontSize = req.getParameter("fontSize");
+        try {
+            float val = Float.parseFloat(fontSize);
+            if (val >= 0.3 && val <= 2) {
+                currentConfig().setFontSize(val);
+            }
+        } catch (NumberFormatException e) {
+            throw new FormException("Font size must be float and not null", fontSize);
+        }
+    }
+
+    private void submitNumberOfColumns(StaplerRequest req) throws FormException {
+        String numberOfColumns = req.getParameter("numberOfColumns");
+        try {
+            int val = Integer.parseInt(numberOfColumns);
+            if (val >= 1 && val <= 8) {
+                currentConfig().setNumberOfColumns(val);
+            }
+        } catch (NumberFormatException e) {
+            throw new FormException("Number of columns must be integer and not null", numberOfColumns);
+        }
+    }
+
+    private void submitColourBlindMode(StaplerRequest req) throws FormException {
+        String colourBlindMode = req.getParameter("colourBlindMode");
+        currentConfig().setColourBlindMode(isGiven(colourBlindMode));
+    }
+
+    private void submitOrder(StaplerRequest req) throws FormException {
+        String requestedOrdering = req.getParameter("order");
         try {
             currentConfig().setOrder(orderIn(requestedOrdering));
         } catch (Exception e) {
@@ -175,7 +229,7 @@ public class BuildMonitorView extends ListView {
 
     // If an older version of config.xml is loaded, "config" field is missing, but "order" is present
     private void migrateFromOldToNewConfigFormat() {
-        Config c = new Config();
+        Config c = Config.defaultConfig();
         c.setOrder(order);
 
         config = c;

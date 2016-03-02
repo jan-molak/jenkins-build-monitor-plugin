@@ -1,13 +1,13 @@
 angular.
     module('buildMonitor.settings', [ 'buildMonitor.services', 'uiSlider']).
 
-    controller('controlPanel', ['$scope', 'cookieJar', 'townCrier',
-        function ($scope, cookieJar, townCrier) {
+    controller('controlPanel', ['$scope', 'cookieJar', 'townCrier', 'DEFAULT_SETTINGS_FONTSIZE', 'DEFAULT_SETTINGS_NUMBEROFCOLUMNS', 'DEFAULT_SETTINGS_COLOURBLINDMODE',
+        function ($scope, cookieJar, townCrier, DEFAULT_SETTINGS_FONTSIZE, DEFAULT_SETTINGS_NUMBEROFCOLUMNS, DEFAULT_SETTINGS_COLOURBLINDMODE) {
             'use strict';
 
-            $scope.settings.fontSize        = cookieJar.get('fontSize',        1);
-            $scope.settings.numberOfColumns = cookieJar.get('numberOfColumns', 2);
-            $scope.settings.colourBlind     = cookieJar.get('colourBlind',     0);
+            $scope.settings.fontSize        = cookieJar.get('fontSize',        DEFAULT_SETTINGS_FONTSIZE);
+            $scope.settings.numberOfColumns = cookieJar.get('numberOfColumns', DEFAULT_SETTINGS_NUMBEROFCOLUMNS);
+            $scope.settings.colourBlind     = cookieJar.get('colourBlind',     DEFAULT_SETTINGS_COLOURBLINDMODE);
 
             angular.forEach($scope.settings, function(value, name) {
                 $scope.$watch('settings.' + name, function(currentValue) {

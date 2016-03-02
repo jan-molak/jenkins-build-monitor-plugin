@@ -65,6 +65,18 @@
     </select>
   </f:entry>
 
+  <f:entry title="${%Font size}">
+    <f:textbox name="fontSize" field="fontSize" value="${it.currentFontSize()}" />
+  </f:entry>
+
+  <f:entry title="${%Number of columns}">
+      <f:textbox name="numberOfColumns" field="numberOfColumns" value="${it.currentNumberOfColumns()}" />
+  </f:entry>
+
+  <f:entry title="${%Colour blind mode ?}">
+      <f:checkbox name="colourBlindMode" checked="${it.isColourBlindMode()}"/>
+  </f:entry>
+
   </f:section>
 
   <script>

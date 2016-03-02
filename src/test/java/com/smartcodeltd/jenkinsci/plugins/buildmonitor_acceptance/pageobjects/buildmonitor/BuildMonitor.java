@@ -15,4 +15,8 @@ public class BuildMonitor extends PageObject {
     public Job job(String name) {
         return new Job(root.findElement(By.id(name)));
     }
+
+    public Settings settings() {
+        return new Settings(root.findElement(By.className("showSettings")));
+    }
 }
