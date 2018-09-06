@@ -1,3 +1,13 @@
 #!/bin/sh
 
+pushd build-monitor-plugin
+
 MAVEN_OPTS="-Xmx4096m -XX:MaxPermSize=2048m" jenv exec mvn clean verify
+
+popd
+
+pushd build-monitor-acceptance
+
+MAVEN_OPTS="-Xmx4096m -XX:MaxPermSize=2048m" jenv exec mvn clean verify
+
+popd

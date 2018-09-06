@@ -1,26 +1,95 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <properties>
+        <jenkins.version>2.46.3</jenkins.version>
+        <jenkins-test-harness.version>2.38</jenkins-test-harness.version>
+        <java.level>8</java.level>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <encoding>UTF-8</encoding>
+        <serenity.version>1.9.8</serenity.version>
+        <aether.version>1.0.0.v20140518</aether.version>
+        <webdriver.driver>chrome</webdriver.driver>
+        <browserstack.url/>
+    </properties>
+
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
-        <artifactId>build-monitor</artifactId>
-        <version>1.12-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <artifactId>plugin</artifactId>
+        <version>3.8</version>
     </parent>
 
+    <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>build-monitor-acceptance</artifactId>
+    <version>1.12-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Build Monitor Acceptance Tests</name>
 
-    <properties>
-        <encoding>UTF-8</encoding>
-        <serenity.version>1.9.8</serenity.version>
-        <aether.version>1.0.0.v20140518</aether.version>
+    <scm>
+        <connection>scm:git:ssh://github.com/jan-molak/jenkins-build-monitor-plugin.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/jan-molak/jenkins-build-monitor-plugin.git</developerConnection>
+        <url>https://github.com/jan-molak/jenkins-build-monitor-plugin</url>
+    </scm>
 
-        <webdriver.driver>chrome</webdriver.driver>
-        <browserstack.url/>
-    </properties>
+    <repositories>
+        <repository>
+            <id>repo.jenkins-ci.org</id>
+            <url>http://repo.jenkins-ci.org/public/</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>central</id>
+            <name>bintray</name>
+            <url>http://jcenter.bintray.com</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>repo.jenkins-ci.org</id>
+            <url>http://repo.jenkins-ci.org/public/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>central</id>
+            <name>bintray-plugins</name>
+            <url>http://jcenter.bintray.com</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jdeferred</groupId>
+                <artifactId>jdeferred-core</artifactId>
+                <version>1.2.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>1.7.19</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-all</artifactId>
+                <version>1.3</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <modules>
         <module>build-monitor-acceptance-base</module>
@@ -44,6 +113,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-enforcer-plugin</artifactId>
+                        <version>3.0.0-M1</version>
                         <executions>
                             <execution>
                                 <id>ensure-browserstack-credentials-present</id>
@@ -181,6 +251,16 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>com.smartcodeltd</groupId>
+                    <artifactId>release-candidate-maven-plugin</artifactId>
+                    <version>1.0-201603091838.01dbbbf</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.19.1</version>
+                </plugin>
+                <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
                         <source>1.8</source>
@@ -246,6 +326,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.0.0-M1</version>
                     <executions>
                         <execution>
                             <id>display-info</id>

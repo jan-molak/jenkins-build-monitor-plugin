@@ -10,11 +10,17 @@ node('hi-speed && lxc-fedora25') {
 
             mvn "-version"
 
-            mvn "release-candidate:updateVersion"
-
             stage 'Build'
 
-            mvn "clean verify"
+            dir('build-monitor-plugin') {
+                mvn "release-candidate:updateVersion"
+
+                mvn "clean verify"
+            }
+
+            dir('build-monitor-acceptance') {
+                mvn "clean verify"
+            }
 
             version = read_property('version', 'build-monitor-plugin/target/classes/build-monitor.properties');
 
