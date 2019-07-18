@@ -14,7 +14,11 @@ public class Config {
     private BuildFailureAnalyzerDisplayedField buildFailureAnalyzerDisplayedField;
     
     public static Config defaultConfig() {
-        return new Config();
+        Config config = new Config();
+        config.setFontSize(1);
+        config.setNumberOfColumns(2);
+        config.setColourBlindMode(false);
+        return config;
     }
 
     public Comparator<Job<?, ?>> getOrder() {
@@ -32,7 +36,31 @@ public class Config {
     public void setOrder(Comparator<Job<?, ?>> order) {
         this.order = order;
     }
-    
+
+    public float getFontSize() {
+        return fontSize;
+    }
+
+    public void setFontSize(float fontSize) {
+        this.fontSize = fontSize;
+    }
+
+    public int getNumberOfColumns() {
+        return numberOfColumns;
+    }
+
+    public void setNumberOfColumns(int numberOfColumns) {
+        this.numberOfColumns = numberOfColumns;
+    }
+
+    public boolean isColourBlindMode() {
+        return colourBlindMode;
+    }
+
+    public void setColourBlindMode(boolean colourBlindMode) {
+        this.colourBlindMode = colourBlindMode;
+    }
+
     public BuildFailureAnalyzerDisplayedField getBuildFailureAnalyzerDisplayedField() {
         return getOrElse(buildFailureAnalyzerDisplayedField, BuildFailureAnalyzerDisplayedField.Name);
     }
@@ -75,4 +103,11 @@ public class Config {
     }
     
     private Comparator<Job<?, ?>> order;
+
+    private float fontSize;
+
+    private int numberOfColumns;
+
+    private boolean colourBlindMode;
+
 }

@@ -190,6 +190,9 @@
 
                     constant('BUILD_MONITOR_VERSION', '${it.installation.buildMonitorVersion()}').
                     constant('CSRF_CRUMB_FIELD_NAME', '${it.csrfCrumbFieldName}').
+                    constant('DEFAULT_SETTINGS_FONTSIZE', '${it.currentFontSize()}').
+                    constant('DEFAULT_SETTINGS_NUMBEROFCOLUMNS', '${it.currentNumberOfColumns()}').
+                    constant('DEFAULT_SETTINGS_COLOURBLINDMODE', '${it.getColourBlindModeValue()}').
 
                     config(function(proxyProvider, cookieJarProvider, hashCodeProvider) {
                         var hashCodeOf = hashCodeProvider.hashCodeOf;

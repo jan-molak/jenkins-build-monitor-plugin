@@ -5,6 +5,7 @@ public class NullSafety {
     /**
      * @param value         a value that can be a potential null
      * @param defaultValue  a default to be returned if the value is null
+     * @param <T>           a type
      *
      * @return either value or defaultValue
      */

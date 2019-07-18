@@ -40,6 +40,68 @@ public class BuildMonitorDescriptorTest {
         assertThat(htmlDecoded(result.getMessage()), containsString("Unmatched closing ')'"));
     }
 
+    @Test
+    public void form_validator_should_allow_fontsize_in_good_range() throws Exception {
+        FormValidation result = validator.doCheckFontSize("1.0");
+
+        assertThat(result.kind, is(OK));
+    }
+
+    @Test
+    public void form_validator_should_refuse_fontsize_under_0_3() throws Exception {
+        FormValidation result = validator.doCheckFontSize("0");
+
+        assertThat(result.kind, is(ERROR));
+        assertThat(htmlDecoded(result.getMessage()), containsString("Must be >= 0.3 and <= 2"));
+    }
+
+    @Test
+    public void form_validator_should_refuse_fontsize_over_2() throws Exception {
+        FormValidation result = validator.doCheckFontSize("2.1");
+
+        assertThat(result.kind, is(ERROR));
+        assertThat(htmlDecoded(result.getMessage()), containsString("Must be >= 0.3 and <= 2"));
+    }
+
+    @Test
+    public void form_validator_should_refuse_fontsize_not_float() throws Exception {
+        FormValidation result = validator.doCheckFontSize("a");
+
+        assertThat(result.kind, is(ERROR));
+        assertThat(htmlDecoded(result.getMessage()), containsString("Must be float"));
+    }
+
+    @Test
+    public void form_validator_should_allow_numberofcolumns_in_good_range() throws Exception {
+        FormValidation result = validator.doCheckNumberOfColumns("1");
+
+        assertThat(result.kind, is(OK));
+    }
+
+    @Test
+    public void form_validator_should_refuse_numberofcolumns_under_1() throws Exception {
+        FormValidation result = validator.doCheckNumberOfColumns("0");
+
+        assertThat(result.kind, is(ERROR));
+        assertThat(htmlDecoded(result.getMessage()), containsString("Must be >= 1 and <= 8"));
+    }
+
+    @Test
+    public void form_validator_should_refuse_numberofcolumns_over_8() throws Exception {
+        FormValidation result = validator.doCheckNumberOfColumns("10");
+
+        assertThat(result.kind, is(ERROR));
+        assertThat(htmlDecoded(result.getMessage()), containsString("Must be >= 1 and <= 8"));
+    }
+
+    @Test
+    public void form_validator_should_refuse_numberofcolumns_not_integer() throws Exception {
+        FormValidation result = validator.doCheckNumberOfColumns("a");
+
+        assertThat(result.kind, is(ERROR));
+        assertThat(htmlDecoded(result.getMessage()), containsString("Must be integer"));
+    }
+
     private String htmlDecoded(String message) {
         return StringEscapeUtils.unescapeHtml(message);
     }

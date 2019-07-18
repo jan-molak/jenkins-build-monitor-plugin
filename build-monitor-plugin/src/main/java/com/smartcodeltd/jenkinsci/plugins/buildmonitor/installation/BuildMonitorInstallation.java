@@ -22,6 +22,7 @@ public class BuildMonitorInstallation {
     /**
      * Used to make sure that the anonymous Build Monitor stats are not double-counted,
      * as in a typical setup there's one Jenkins, but multiple Build Monitors.
+     * @return anonymous Correlation Id
      */
     public String anonymousCorrelationId() {
         // we only need to calculate this once

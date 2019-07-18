@@ -85,7 +85,7 @@ public class BuildMonitorView extends ListView {
     public String currentOrder() {
         return currentConfig().getOrder().getClass().getSimpleName();
     }
-    
+
     @SuppressWarnings("unused") // used in the configure-entries.jelly form
     public String currentbuildFailureAnalyzerDisplayedField() {
         return currentConfig().getBuildFailureAnalyzerDisplayedField().getValue();
@@ -94,6 +94,26 @@ public class BuildMonitorView extends ListView {
     @SuppressWarnings("unused") // used in the configure-entries.jelly form
     public boolean isDisplayCommitters() {
         return currentConfig().shouldDisplayCommitters();
+    }
+
+    @SuppressWarnings("unused") // used in the configure-entries.jelly form
+    public String currentFontSize() {
+        return String.valueOf(currentConfig().getFontSize());
+    }
+
+    @SuppressWarnings("unused") // used in the configure-entries.jelly form
+    public String currentNumberOfColumns() {
+        return String.valueOf(currentConfig().getNumberOfColumns());
+    }
+
+    @SuppressWarnings("unused") // used in the configure-entries.jelly form
+    public boolean isColourBlindMode() {
+        return currentConfig().isColourBlindMode();
+    }
+
+    @SuppressWarnings("unused") // used in the configure-entries.jelly form
+    public String getColourBlindModeValue() {
+        return isColourBlindMode() ? "1" : "0";
     }
 
     private static final BuildMonitorInstallation installation = new BuildMonitorInstallation();
@@ -121,7 +141,9 @@ public class BuildMonitorView extends ListView {
 
             currentConfig().setDisplayCommitters(json.optBoolean("displayCommitters", true));
             currentConfig().setBuildFailureAnalyzerDisplayedField(req.getParameter("buildFailureAnalyzerDisplayedField"));
-            
+            submitFontSize(req);
+            submitNumberOfColumns(req);
+            submitColourBlindMode(req);
             try {
                 currentConfig().setOrder(orderIn(requestedOrdering));
             } catch (Exception e) {
@@ -130,12 +152,42 @@ public class BuildMonitorView extends ListView {
         }
     }
 
+    private void submitFontSize(StaplerRequest req) throws FormException {
+        String fontSize = req.getParameter("fontSize");
+        try {
+            float val = Float.parseFloat(fontSize);
+            if (val >= 0.3 && val <= 2) {
+                currentConfig().setFontSize(val);
+            }
+        } catch (NumberFormatException e) {
+            throw new FormException("Font size must be float and not null", fontSize);
+        }
+    }
+
+
+    private void submitNumberOfColumns(StaplerRequest req) throws FormException {
+        String numberOfColumns = req.getParameter("numberOfColumns");
+        try {
+            int val = Integer.parseInt(numberOfColumns);
+            if (val >= 1 && val <= 8) {
+                currentConfig().setNumberOfColumns(val);
+            }
+        } catch (NumberFormatException e) {
+            throw new FormException("Number of columns must be integer and not null", numberOfColumns);
+        }
+    }
+
+    private void submitColourBlindMode(StaplerRequest req) throws FormException {
+        String colourBlindMode = req.getParameter("colourBlindMode");
+        currentConfig().setColourBlindMode(isGiven(colourBlindMode));
+    }
+
     /**
      * Because of how org.kohsuke.stapler.HttpResponseRenderer is implemented
      * it can only work with net.sf.JSONObject in order to produce correct application/json output
      *
      * @return Json representation of JobViews
-     * @throws Exception
+     * @throws Exception description
      */
     @JavaScriptMethod
     public JSONObject fetchJobViews() throws Exception {
@@ -196,7 +248,7 @@ public class BuildMonitorView extends ListView {
 
     // If an older version of config.xml is loaded, "config" field is missing, but "order" is present
     private void migrateFromOldToNewConfigFormat() {
-        Config c = new Config();
+        Config c = Config.defaultConfig();
         c.setOrder(order);
 
         config = c;
