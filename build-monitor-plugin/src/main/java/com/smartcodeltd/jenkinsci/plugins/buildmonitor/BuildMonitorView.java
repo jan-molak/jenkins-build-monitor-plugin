@@ -87,7 +87,7 @@ public class BuildMonitorView extends ListView {
     }
     
     @SuppressWarnings("unused") // used in the configure-entries.jelly form
-    public String currentbuildFailureAnalyzerDisplayedField() {
+    public String currentBuildFailureAnalyzerDisplayedField() {
         return currentConfig().getBuildFailureAnalyzerDisplayedField().getValue();
     }
 

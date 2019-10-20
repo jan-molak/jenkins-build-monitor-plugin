@@ -59,9 +59,9 @@ public class Config {
     // --
 
     public enum BuildFailureAnalyzerDisplayedField {
-        Name("name"),
-        Description("description"),
-        None("none");
+        Name("Name"),
+        Description("Description"),
+        None("None");
     
         private final String value;
         BuildFailureAnalyzerDisplayedField(String value) {
