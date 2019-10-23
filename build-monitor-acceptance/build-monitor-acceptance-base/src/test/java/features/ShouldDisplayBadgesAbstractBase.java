@@ -5,6 +5,7 @@ import com.smartcodeltd.jenkinsci.plugins.build_monitor.tasks.HaveABuildMonitorV
 import com.smartcodeltd.jenkinsci.plugins.build_monitor.tasks.ModifyControlPanelOptions;
 import com.smartcodeltd.jenkinsci.plugins.build_monitor.tasks.ShowBadges;
 import environment.JenkinsSandbox;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import net.serenitybdd.integration.jenkins.JenkinsInstance;
 import net.serenitybdd.integration.jenkins.environment.rules.InstallPlugins;
 import net.serenitybdd.junit.runners.SerenityRunner;
@@ -17,6 +18,7 @@ import net.serenitybdd.screenplay.jenkins.tasks.configuration.build_steps.SetPip
 import net.serenitybdd.screenplayx.actions.Navigate;
 import net.thucydides.core.annotations.Managed;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +42,11 @@ public abstract class ShouldDisplayBadgesAbstractBase {
     ).create();
 
     abstract String[] getPlugins();
+
+    @BeforeClass
+    public static void setupChromeDriver() {
+        WebDriverManager.chromedriver().setup();
+    }
 
     @Before
     public void actorCanBrowseTheWeb() {

@@ -13,6 +13,7 @@
 target
 work*
 
+node
 node_modules
 
 use-node

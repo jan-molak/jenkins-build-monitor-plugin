@@ -1,5 +1,6 @@
 package com.smartcodeltd.jenkinsci.plugin.assetbundler;
 
+import org.apache.commons.lang.SystemUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -11,6 +12,9 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public class PathToAssetTest {
+    
+    private static final String WINDOWS_SEPARATOR = "\\\\";
+    private static final String UNIX_SEPARATOR = "/";
 
     @Test
     public void combines_base_resource_url_given_by_jenkins_and_a_path_to_the_asset() throws Exception {
@@ -18,7 +22,7 @@ public class PathToAssetTest {
 
         PathToAsset path = new PathToAsset(base, "less/index.less");
 
-        assertThat(absolute(path), is("/opt/jenkins/plugins/build-monitor-plugin/less/index.less"));
+        assertThat(normalize(absolute(path)), is("/opt/jenkins/plugins/build-monitor-plugin/less/index.less"));
     }
 
     @Test
@@ -27,7 +31,7 @@ public class PathToAssetTest {
 
         PathToAsset path = new PathToAsset(base, "less/index.less");
 
-        assertThat(absolute(path), is("/server/jenkins/plugins/build-monitor-plugin/less/index.less"));
+        assertThat(normalize(absolute(path)), is("/server/jenkins/plugins/build-monitor-plugin/less/index.less"));
     }
 
     @Rule public ExpectedException thrown = ExpectedException.none();
@@ -44,6 +48,25 @@ public class PathToAssetTest {
 
     private String absolute(PathToAsset path) {
         return path.toFile().getAbsolutePath();
+    }
+
+    /**
+     * Normalize the path to get a constant value between windows and *nix
+     */
+    private String normalize(String path) {
+        String normalized = path;
+        
+        if (SystemUtils.IS_OS_WINDOWS) {
+            normalized = normalized.replaceAll(WINDOWS_SEPARATOR, UNIX_SEPARATOR);
+            if (normalized.indexOf(":") >= 0) {
+                normalized = normalized.substring(normalized.indexOf(":") + 1);
+            }
+            if (normalized.startsWith("//")) {
+                normalized = normalized.substring(1);
+            }
+        }
+        
+        return normalized;
     }
 
     // a pass-through method, only here for readability purposes

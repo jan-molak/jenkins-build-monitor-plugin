@@ -53,25 +53,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <npm-executable>npm</npm-executable>
+        <node.version>v12.13.0</node.version>
+        <npm.version>6.12.0</npm.version>
         <selenium.version>2.43.0</selenium.version>
         <build.number>DEV</build.number>
         <configuration-as-code.version>1.32</configuration-as-code.version>
     </properties>
-
-    <profiles>
-        <profile>
-            <id>windows</id>
-            <activation>
-                <os>
-                    <family>Windows</family>
-                </os>
-            </activation>
-            <properties>
-                <npm-executable>npm.cmd</npm-executable>
-            </properties>
-        </profile>
-    </profiles>
 
     <!-- get every artifact through repo.jenkins-ci.org, which proxies all the artifacts that we need -->
     <repositories>
@@ -347,41 +334,41 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.8.0</version>
                 <executions>
                     <execution>
+                        <id>install node and npm</id>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>install-node-and-npm</goal>
                         </goals>
                         <phase>generate-test-resources</phase>
+                        <configuration>
+                            <nodeVersion>${node.version}</nodeVersion>
+                            <npmVersion>${npm.version}</npmVersion>
+                        </configuration>
                     </execution>
-                </executions>
-                <configuration>
-                    <executable>${npm-executable}</executable>
-                    <arguments>
-                        <argument>install</argument>
-                        <argument>--silent</argument>
-                    </arguments>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.kelveden</groupId>
-                <artifactId>maven-karma-plugin</artifactId>
-                <version>1.8</version>
-                <executions>
                     <execution>
+                        <id>npm install</id>
                         <goals>
-                            <goal>start</goal>
+                            <goal>npm</goal>
                         </goals>
-                        <phase>test</phase>
+                        <phase>generate-test-resources</phase>
+                        <configuration>
+                            <arguments>install --silent</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>karma</id>
+                        <goals>
+                            <goal>karma</goal>
+                        </goals>
+                        <configuration>
+                            <karmaConfPath>src/test/resources/karma.conf.js</karmaConfPath>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <karmaExecutable>${project.basedir}/node_modules/karma/bin/karma</karmaExecutable>
-                    <configFile>src/test/resources/karma.conf.js</configFile>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>

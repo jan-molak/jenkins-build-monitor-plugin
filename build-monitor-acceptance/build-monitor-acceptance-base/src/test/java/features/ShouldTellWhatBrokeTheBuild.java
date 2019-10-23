@@ -4,6 +4,7 @@ import com.smartcodeltd.jenkinsci.plugins.build_monitor.questions.ProjectWidget;
 import com.smartcodeltd.jenkinsci.plugins.build_monitor.tasks.HaveABuildMonitorViewCreated;
 import com.sonyericsson.jenkins.plugins.bfa.HaveAShellScriptFailureCauseDefined;
 import environment.JenkinsSandbox;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import net.serenitybdd.integration.jenkins.JenkinsInstance;
 import net.serenitybdd.integration.jenkins.environment.rules.InstallPlugins;
 import net.serenitybdd.junit.runners.SerenityRunner;
@@ -13,6 +14,7 @@ import net.serenitybdd.screenplay.jenkins.HaveAFailingProjectCreated;
 import net.serenitybdd.screenplayx.actions.Navigate;
 import net.thucydides.core.annotations.Managed;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +33,11 @@ public class ShouldTellWhatBrokeTheBuild {
     @Rule public JenkinsInstance jenkins = JenkinsSandbox.configure().afterStart(
             InstallPlugins.fromUpdateCenter("cloudbees-folder", "build-failure-analyzer")
     ).create();
+
+    @BeforeClass
+    public static void setupChromeDriver() {
+        WebDriverManager.chromedriver().setup();
+    }
 
     @Before
     public void actorCanBrowseTheWeb() {

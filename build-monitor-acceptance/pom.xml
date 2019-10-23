@@ -123,6 +123,13 @@
             <artifactId>httpclient</artifactId>
             <version>4.5.5</version>
         </dependency>
+        
+        <!-- webdriver -->
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>3.7.1</version>
+        </dependency>
 
         <!-- serenity -->
         <dependency>

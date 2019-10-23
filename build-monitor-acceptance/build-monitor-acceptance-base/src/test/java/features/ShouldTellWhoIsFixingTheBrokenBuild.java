@@ -5,6 +5,7 @@ import com.smartcodeltd.jenkinsci.plugins.build_monitor.tasks.HaveABuildMonitorV
 import environment.JenkinsSandbox;
 import hudson.plugins.claim.HaveAFailingClaimableProjectCreated;
 import hudson.plugins.claim.tasks.Claim;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import net.serenitybdd.integration.jenkins.JenkinsInstance;
 import net.serenitybdd.integration.jenkins.environment.rules.InstallPlugins;
 import net.serenitybdd.integration.jenkins.environment.rules.RegisterUserAccount;
@@ -16,6 +17,7 @@ import net.serenitybdd.screenplay.jenkins.tasks.LogIn;
 import net.serenitybdd.screenplayx.actions.Navigate;
 import net.thucydides.core.annotations.Managed;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,6 +39,11 @@ public class ShouldTellWhoIsFixingTheBrokenBuild {
             InstallPlugins.fromUpdateCenter("claim"),
             RegisterUserAccount.of(ben)
     ).create();
+
+    @BeforeClass
+    public static void setupChromeDriver() {
+        WebDriverManager.chromedriver().setup();
+    }
 
     @Before
     public void actorCanBrowseTheWeb() {
