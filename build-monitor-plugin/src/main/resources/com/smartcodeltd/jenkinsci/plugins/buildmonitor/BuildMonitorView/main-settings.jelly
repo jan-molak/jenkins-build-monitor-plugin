@@ -1,6 +1,6 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core">
-    <nav data-ng-controller="controlPanel" data-ng-init="built_at = '${it.installation.buildMonitorBuiltAt()}'">
+    <nav data-ng-controller="controlPanel" data-ng-init="built_at = '${it.installation.buildMonitorBuiltAt()}'; defaults.fontSize = ${it.textScale}; defaults.numberOfColumns = ${it.maxColumns}; defaults.colourBlind = ${it.colourBlindMode}; defaults.reduceMotion = ${it.reduceMotion}; defaults.showBadges = ${it.showBadges}; addCookie()">
         <span data-ng-show="newVersionAvailable" class="notifications">!</span>
         <section data-ng-class="{ showSettings:toggleSettings }">
             <input id="settings-toggle" type="checkbox" class="settings" data-ng-model="toggleSettings" />
@@ -46,6 +46,11 @@
                     <a class="btn"
                        href="configure"
                        title="Configure the '${it.displayName}' view">Configure</a>
+                </li>
+                <li>
+                    <a class="btn"
+                       data-ng-click="resetSettings()"
+                       title="Reset to defaults.' view">Reset to defaults</a>
                 </li>
                 <li>
                     <button class="btn btn-primary" data-ng-click="toggleSettings=false">Done</button>

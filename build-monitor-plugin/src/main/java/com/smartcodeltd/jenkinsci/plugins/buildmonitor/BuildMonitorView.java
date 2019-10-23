@@ -96,6 +96,36 @@ public class BuildMonitorView extends ListView {
         return currentConfig().shouldDisplayCommitters();
     }
 
+    // used in the configure-entries.jelly and main-settings.jelly forms
+    @SuppressWarnings("unused")
+    public double getTextScale() {
+        return currentConfig().getTextScale();
+    }
+
+    // used in the configure-entries.jelly and main-settings.jelly forms
+    @SuppressWarnings("unused")
+    public int getMaxColumns() {
+        return currentConfig().getMaxColumns();
+    }
+
+    // used in the configure-entries.jelly and main-settings.jelly forms
+    @SuppressWarnings("unused")
+    public boolean isColourBlindMode() {
+        return currentConfig().inColourBlindMode();
+    }
+
+    // used in the configure-entries.jelly and main-settings.jelly forms
+    @SuppressWarnings("unused")
+    public boolean isReduceMotion() {
+        return currentConfig().reduceMotion();
+    }
+
+    // used in the configure-entries.jelly and main-settings.jelly forms
+    @SuppressWarnings("unused")
+    public boolean isShowBadges() {
+        return currentConfig().showBadges();
+    }
+
     private static final BuildMonitorInstallation installation = new BuildMonitorInstallation();
 
     @SuppressWarnings("unused") // used in index.jelly
@@ -122,7 +152,12 @@ public class BuildMonitorView extends ListView {
 
             String requestedOrdering = req.getParameter("order");
             title                    = req.getParameter("title");
+            String maxColumns        = req.getParameter("maxColumns");
+            String textScale         = req.getParameter("textScale");
 
+            currentConfig().setColourBlindMode(json.optBoolean("colourBlindMode", false));
+            currentConfig().setReduceMotion(json.optBoolean("reduceMotion", false));
+            currentConfig().setShowBadges(json.optBoolean("showBadges", false));
             currentConfig().setDisplayCommitters(json.optBoolean("displayCommitters", true));
             currentConfig().setBuildFailureAnalyzerDisplayedField(req.getParameter("buildFailureAnalyzerDisplayedField"));
             
@@ -130,6 +165,16 @@ public class BuildMonitorView extends ListView {
                 currentConfig().setOrder(orderIn(requestedOrdering));
             } catch (Exception e) {
                 throw new FormException("Can't order projects by " + requestedOrdering, "order");
+            }
+            try {
+                currentConfig().setMaxColumns(Integer.parseInt(maxColumns));
+            } catch (Exception e) {
+                throw new FormException("Invalid value of 'Maximum number of columns': '" + maxColumns + "' (should be double).", maxColumns);
+            }
+            try {
+                currentConfig().setTextScale(Double.parseDouble(textScale));
+            } catch (Exception e) {
+                throw new FormException("Invalid value of 'Text scale': '" + textScale + "' (should be double).", textScale);
             }
         }
     }

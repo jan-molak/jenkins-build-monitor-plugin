@@ -70,6 +70,30 @@
 
   </f:section>
 
+  <f:section title="${%Build Monitor - Default Display Settings}">
+
+    <f:entry title="${%Text scale}" field="textScale">
+      <f:textbox name="textScale" value="${it.textScale}" />
+    </f:entry>
+
+    <f:entry title="${%Maximum number of columns}" field="maxColumns">
+      <f:textbox name="maxColumns" value="${it.maxColumns}" />
+    </f:entry>
+
+    <f:entry title="${%Enable Colour blind mode}">
+      <f:checkbox id="colourBlindMode" field="colourBlindMode" />
+    </f:entry>
+
+    <f:entry title="${%Enable Reduce motion}">
+      <f:checkbox id="reduceMotion" field="reduceMotion" />
+    </f:entry>
+
+    <f:entry title="${%Enable Show badges}">
+      <f:checkbox id="showBadges" field="showBadges" />
+    </f:entry>
+
+  </f:section>
+
   <f:section title="${%Build Monitor - Widget Settings}">
 
     <f:entry title="${%Display committers}" help="${descriptor.getHelpFile('displayCommitters')}">

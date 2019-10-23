@@ -10,11 +10,25 @@ import static com.smartcodeltd.jenkinsci.plugins.buildmonitor.functions.NullSafe
 
 public class Config {
 
+    private boolean colourBlindMode;
     private boolean displayCommitters;
+    private boolean reduceMotion;
+    private boolean showBadges;
+    private int maxColumns;
+    private double textScale;
     private BuildFailureAnalyzerDisplayedField buildFailureAnalyzerDisplayedField;
     
     public static Config defaultConfig() {
-        return new Config();
+        Config defaultConfig = new Config();
+
+        // Set default values
+        defaultConfig.setColourBlindMode(false);
+        defaultConfig.setDisplayCommitters(false);
+        defaultConfig.setShowBadges(false);
+        defaultConfig.setMaxColumns(2);
+        defaultConfig.setTextScale(1.0);
+
+        return defaultConfig;
     }
 
     public Comparator<Job<?, ?>> getOrder() {
@@ -32,23 +46,63 @@ public class Config {
     public void setOrder(Comparator<Job<?, ?>> order) {
         this.order = order;
     }
-    
+
     public BuildFailureAnalyzerDisplayedField getBuildFailureAnalyzerDisplayedField() {
         return getOrElse(buildFailureAnalyzerDisplayedField, BuildFailureAnalyzerDisplayedField.Name);
     }
-    
+
     public void setBuildFailureAnalyzerDisplayedField(String buildFailureAnalyzerDisplayedField) {
         this.buildFailureAnalyzerDisplayedField = BuildFailureAnalyzerDisplayedField.valueOf(buildFailureAnalyzerDisplayedField);
     }
-    
+
+    public boolean inColourBlindMode() {
+        return colourBlindMode;
+    }
+
+    public void setColourBlindMode(boolean flag) {
+        this.colourBlindMode = flag;
+    }
+
     public boolean shouldDisplayCommitters() {
-        return getOrElse(displayCommitters, true);
+        return displayCommitters;
     }
 
     public void setDisplayCommitters(boolean flag) {
         this.displayCommitters = flag;
     }
-    
+
+    public boolean reduceMotion() {
+        return reduceMotion;
+    }
+
+    public void setReduceMotion(boolean flag) {
+        this.reduceMotion = flag;
+    }
+
+    public boolean showBadges() {
+        return showBadges;
+    }
+
+    public void setShowBadges(boolean flag) {
+        this.showBadges = flag;
+    }
+
+    public int getMaxColumns() {
+        return maxColumns;
+    }
+
+    public void setMaxColumns(int maxColumns) {
+        this.maxColumns = maxColumns;
+    }
+
+    public double getTextScale() {
+        return textScale;
+    }
+
+    public void setTextScale(double scale) {
+        this.textScale = scale;
+    }
+
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
@@ -62,17 +116,17 @@ public class Config {
         Name("name"),
         Description("description"),
         None("none");
-    
+
         private final String value;
         BuildFailureAnalyzerDisplayedField(String value) {
             this.value = value;
         }
-    
+
         public String getValue() { return value; }
-    
+
         @Override
         public String toString() { return value; }
     }
-    
+
     private Comparator<Job<?, ?>> order;
 }
