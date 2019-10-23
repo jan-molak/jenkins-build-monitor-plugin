@@ -31,9 +31,8 @@ public class JenkinsLogWatcher implements AutoCloseable, Runnable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         stop = true;
-        jenkinsOutput.close();
         watchers.clear();
     }
 
@@ -41,7 +40,7 @@ public class JenkinsLogWatcher implements AutoCloseable, Runnable {
     public void run() {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(jenkinsOutput, Charset.forName("UTF-8")))) {
             String line;
-            while ((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null && !stop) {
 
                 Log.debug(line);
 

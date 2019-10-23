@@ -24,7 +24,7 @@ import java.net.URL;
 @PrepareForTest({Jenkins.class, URL.class})
 public class HasBadgesBadgePluginTest {
     private JobView job;
-    
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -39,35 +39,46 @@ public class HasBadgesBadgePluginTest {
 
     @Test
     public void should_support_job_without_badges() throws Exception {
-        job = a(jobView().which(new HasBadgesBadgePlugin()).of(
-                a(job())));
+        job = a(jobView().which(hasBadgePluginBadges(withDefaultConfig())).of(a(job())));
 
         assertThat(serialisedBadgesDetailsOf(job), is(nullValue()));
     }
 
     @Test
     public void should_convert_badges_to_json() throws Exception {
-        job = a(jobView().which(new HasBadgesBadgePlugin()).of(
-            a(job().whereTheLast(build().hasBadgesBadgePlugin(badgePluginBadge().withText("badge1"), badgePluginBadge().withText("badge2"))))));
+        job = a(jobView().which(hasBadgePluginBadges(withDefaultConfig())).of(a(job().whereTheLast(
+                build().hasBadges(badgePluginBadge().withText("badge1"), badgePluginBadge().withText("badge2"))))));
 
         assertThat(serialisedBadgesDetailsOf(job).value(), hasSize(2));
     }
 
     @Test
     public void should_ignore_badges_with_icon() throws Exception {
-        job = a(jobView().which(new HasBadgesBadgePlugin()).of(
-            a(job().whereTheLast(build().hasBadgesBadgePlugin(badgePluginBadge().withIcon("icon.gif", "badge1"), badgePluginBadge().withText("badge2"))))));
+        job = a(jobView().which(hasBadgePluginBadges(withDefaultConfig()))
+                .of(a(job().whereTheLast(build().hasBadges(badgePluginBadge().withIcon("icon.gif", "badge1"),
+                        badgePluginBadge().withText("badge2"))))));
 
         assertThat(serialisedBadgesDetailsOf(job).value(), hasSize(1));
     }
 
     @Test
     public void should_report_badges_from_latest_build() throws Exception {
-        job = a(jobView().which(new HasBadgesBadgePlugin()).of(
-                a(job().whereTheLast(build().isStillBuilding().hasBadgesBadgePlugin(badgePluginBadge().withText("badge1")))
-                        .andThePrevious(build().hasBadgesBadgePlugin(badgePluginBadge().withText("badge1"), badgePluginBadge().withText("badge2"))))));
+        job = a(jobView().which(hasBadgePluginBadges(withDefaultConfig()))
+                .of(a(job().whereTheLast(build().isStillBuilding().hasBadges(badgePluginBadge().withText("badge1")))
+                        .andThePrevious(build().hasBadges(badgePluginBadge().withText("badge1"),
+                                badgePluginBadge().withText("badge2"))))));
 
         assertThat(serialisedBadgesDetailsOf(job).value(), hasSize(1));
+    }
+
+    @Test
+    public void should_report_badges_from_last_completed_build() throws Exception {
+        job = a(jobView().which(hasBadgePluginBadges(withConfig().withBadgesFromLastCompletedBuild()))
+                .of(a(job().whereTheLast(build().isStillBuilding().hasBadges(badgePluginBadge().withText("badge1")))
+                        .andThePrevious(build().hasBadges(badgePluginBadge().withText("badge1"),
+                                badgePluginBadge().withText("badge2"))))));
+
+        assertThat(serialisedBadgesDetailsOf(job).value(), hasSize(2));
     }
 
     private HasBadgesBadgePlugin.Badges serialisedBadgesDetailsOf(JobView job) {

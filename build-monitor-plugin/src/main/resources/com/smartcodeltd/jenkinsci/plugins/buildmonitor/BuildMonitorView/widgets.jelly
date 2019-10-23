@@ -37,7 +37,7 @@
                         <li data-ng-repeat="name in project.problems">{{ name }}</li>
                     </ul>
                 </li>
-                <li data-ng-show="settings.showBadges == 1 &amp;&amp; !!project.badges" class="badges">
+                <li data-ng-show="!!project.badges &amp;&amp; (project.config.displayBadges == 'Always' || (project.config.displayBadges == 'UserSetting' &amp;&amp; settings.showBadges == 1))" class="badges">
                     <span class="badge"
                           data-ng-repeat="badge in project.badges track by $index"
                           data-ng-style="{ 'border': badge.border + ' solid ' + badge.borderColor, 'background': badge.background, 'color': badge.color }">

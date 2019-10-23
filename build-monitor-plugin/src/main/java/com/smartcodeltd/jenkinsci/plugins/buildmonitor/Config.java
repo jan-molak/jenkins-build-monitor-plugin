@@ -1,6 +1,8 @@
 package com.smartcodeltd.jenkinsci.plugins.buildmonitor;
 
 import com.google.common.base.Objects;
+import com.smartcodeltd.jenkinsci.plugins.buildmonitor.build.GetBuildViewModel;
+import com.smartcodeltd.jenkinsci.plugins.buildmonitor.build.GetLastBuild;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.order.ByName;
 import hudson.model.Job;
 
@@ -11,6 +13,8 @@ import static com.smartcodeltd.jenkinsci.plugins.buildmonitor.functions.NullSafe
 public class Config {
 
     private boolean displayCommitters;
+    private DisplayOptions displayBadges;
+    private GetBuildViewModel displayBadgesFrom;
     private BuildFailureAnalyzerDisplayedField buildFailureAnalyzerDisplayedField;
     
     public static Config defaultConfig() {
@@ -48,7 +52,23 @@ public class Config {
     public void setDisplayCommitters(boolean flag) {
         this.displayCommitters = flag;
     }
+
+    public DisplayOptions getDisplayBadges() {
+        return getOrElse(displayBadges, DisplayOptions.UserSetting);
+    }
+
+    public void setDisplayBadges(String option) {
+        this.displayBadges = DisplayOptions.valueOf(option);
+    }
     
+    public GetBuildViewModel getDisplayBadgesFrom() {
+        return getOrElse(displayBadgesFrom, new GetLastBuild());
+    }
+
+    public void setDisplayBadgesFrom(GetBuildViewModel displayBadgesFrom) {
+        this.displayBadgesFrom = displayBadgesFrom;
+    }
+
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
@@ -74,5 +94,9 @@ public class Config {
         public String toString() { return value; }
     }
     
+    public enum DisplayOptions {
+        Always, Never, UserSetting;
+    }
+
     private Comparator<Job<?, ?>> order;
 }

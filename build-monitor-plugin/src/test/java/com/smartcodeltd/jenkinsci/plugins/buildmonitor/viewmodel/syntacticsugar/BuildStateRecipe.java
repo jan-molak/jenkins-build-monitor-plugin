@@ -228,7 +228,7 @@ public class BuildStateRecipe implements Supplier<AbstractBuild<?, ?>> {
         return failure;
     }
 
-    public BuildStateRecipe hasBadgesGroovyPostbuildPlugin(BadgeGroovyPostbuildRecipe... badges) {
+    public BuildStateRecipe hasBadges(BadgeGroovyPostbuildRecipe... badges) {
         List<GroovyPostbuildAction> actions = new ArrayList<GroovyPostbuildAction>();
         for (int i = 0; i < badges.length; i++) {
             actions.add(badges[i].get());
@@ -238,7 +238,7 @@ public class BuildStateRecipe implements Supplier<AbstractBuild<?, ?>> {
         return this;
     }
 
-    public BuildStateRecipe hasBadgesBadgePlugin(BadgeBadgePluginRecipe... badges) {
+    public BuildStateRecipe hasBadges(BadgeBadgePluginRecipe... badges) {
         List<BadgeAction> actions = new ArrayList<BadgeAction>();
         for (int i = 0; i < badges.length; i++) {
             actions.add(badges[i].get());

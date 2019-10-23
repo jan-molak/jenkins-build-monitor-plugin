@@ -24,6 +24,7 @@
 package com.smartcodeltd.jenkinsci.plugins.buildmonitor;
 
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.api.Respond;
+import com.smartcodeltd.jenkinsci.plugins.buildmonitor.build.GetBuildViewModel;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.facade.StaticJenkinsAPIs;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.installation.BuildMonitorInstallation;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.JobView;
@@ -96,6 +97,16 @@ public class BuildMonitorView extends ListView {
         return currentConfig().shouldDisplayCommitters();
     }
 
+    @SuppressWarnings("unused") // used in the configure-entries.jelly form
+    public String currentDisplayBadges() {
+        return currentConfig().getDisplayBadges().name();
+    }
+
+    @SuppressWarnings("unused") // used in the configure-entries.jelly form
+    public String currentDisplayBadgesFrom() {
+        return currentConfig().getDisplayBadgesFrom().getClass().getSimpleName();
+    }
+
     private static final BuildMonitorInstallation installation = new BuildMonitorInstallation();
 
     @SuppressWarnings("unused") // used in index.jelly
@@ -121,8 +132,10 @@ public class BuildMonitorView extends ListView {
         synchronized (this) {
 
             String requestedOrdering = req.getParameter("order");
+            String displayBadgesFrom = req.getParameter("displayBadgesFrom");
             title                    = req.getParameter("title");
 
+            currentConfig().setDisplayBadges(req.getParameter("displayBadges"));
             currentConfig().setDisplayCommitters(json.optBoolean("displayCommitters", true));
             currentConfig().setBuildFailureAnalyzerDisplayedField(req.getParameter("buildFailureAnalyzerDisplayedField"));
             
@@ -130,6 +143,12 @@ public class BuildMonitorView extends ListView {
                 currentConfig().setOrder(orderIn(requestedOrdering));
             } catch (Exception e) {
                 throw new FormException("Can't order projects by " + requestedOrdering, "order");
+            }
+
+            try {
+                currentConfig().setDisplayBadgesFrom(getBuildViewModelIn(displayBadgesFrom));
+            } catch (Exception e) {
+                throw new FormException("Can't display badges from " + displayBadgesFrom, "displayBadgesFrom");
             }
         }
     }
@@ -212,6 +231,12 @@ public class BuildMonitorView extends ListView {
         String packageName = this.getClass().getPackage().getName() + ".order.";
 
         return (Comparator<Job<?, ?>>) Class.forName(packageName + requestedOrdering).newInstance();
+    }
+
+    private GetBuildViewModel getBuildViewModelIn(String requestedBuild)  throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        String packageName = this.getClass().getPackage().getName() + ".build.";
+
+        return (GetBuildViewModel) Class.forName(packageName + requestedBuild).newInstance();
     }
 
     private Config config;

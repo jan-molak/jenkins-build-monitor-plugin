@@ -18,8 +18,14 @@ import com.jenkinsci.plugins.badge.action.BadgeAction;
  * @author Daniel Beland
  */
 public class HasBadgesBadgePlugin implements Feature<HasBadgesBadgePlugin.Badges> {
+
+    private final com.smartcodeltd.jenkinsci.plugins.buildmonitor.Config config;
     private ActionFilter filter = new ActionFilter();
     private JobView job;
+
+    public HasBadgesBadgePlugin(com.smartcodeltd.jenkinsci.plugins.buildmonitor.Config config) {
+        this.config = config;
+    }
 
     @Override
     public HasBadgesBadgePlugin of(JobView jobView) {
@@ -30,7 +36,8 @@ public class HasBadgesBadgePlugin implements Feature<HasBadgesBadgePlugin.Badges
 
     @Override
     public Badges asJson() {
-        Iterator<BadgeAction> badges = Iterables.filter(job.lastBuild().allDetailsOf(BadgeAction.class), filter).iterator();
+        Iterator<BadgeAction> badges =
+            Iterables.filter(config.getDisplayBadgesFrom().from(job).allDetailsOf(BadgeAction.class), filter).iterator();
 
         return badges.hasNext()
             ? new Badges(badges)
