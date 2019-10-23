@@ -1,6 +1,8 @@
 package com.smartcodeltd.jenkinsci.plugins.buildmonitor;
 
 import com.google.common.base.Objects;
+import com.smartcodeltd.jenkinsci.plugins.buildmonitor.build.GetBuildViewModel;
+import com.smartcodeltd.jenkinsci.plugins.buildmonitor.build.GetLastBuild;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.order.ByName;
 import hudson.model.Job;
 
@@ -11,8 +13,11 @@ import static com.smartcodeltd.jenkinsci.plugins.buildmonitor.functions.NullSafe
 public class Config {
 
     private boolean displayCommitters;
+    private DisplayOptions displayBadges;
+    private GetBuildViewModel displayBadgesFrom;
     private BuildFailureAnalyzerDisplayedField buildFailureAnalyzerDisplayedField;
-    
+    private boolean displayJUnitProgress;
+
     public static Config defaultConfig() {
         return new Config();
     }
@@ -32,15 +37,15 @@ public class Config {
     public void setOrder(Comparator<Job<?, ?>> order) {
         this.order = order;
     }
-    
+
     public BuildFailureAnalyzerDisplayedField getBuildFailureAnalyzerDisplayedField() {
         return getOrElse(buildFailureAnalyzerDisplayedField, BuildFailureAnalyzerDisplayedField.Name);
     }
-    
+
     public void setBuildFailureAnalyzerDisplayedField(String buildFailureAnalyzerDisplayedField) {
         this.buildFailureAnalyzerDisplayedField = BuildFailureAnalyzerDisplayedField.valueOf(buildFailureAnalyzerDisplayedField);
     }
-    
+
     public boolean shouldDisplayCommitters() {
         return getOrElse(displayCommitters, true);
     }
@@ -48,7 +53,31 @@ public class Config {
     public void setDisplayCommitters(boolean flag) {
         this.displayCommitters = flag;
     }
-    
+
+    public DisplayOptions getDisplayBadges() {
+        return getOrElse(displayBadges, DisplayOptions.UserSetting);
+    }
+
+    public void setDisplayBadges(String option) {
+        this.displayBadges = DisplayOptions.valueOf(option);
+    }
+
+    public GetBuildViewModel getDisplayBadgesFrom() {
+        return getOrElse(displayBadgesFrom, new GetLastBuild());
+    }
+
+    public void setDisplayBadgesFrom(GetBuildViewModel displayBadgesFrom) {
+        this.displayBadgesFrom = displayBadgesFrom;
+    }
+
+    public boolean shouldDisplayJUnitProgress() {
+        return getOrElse(displayJUnitProgress, true);
+    }
+
+    public void setDisplayJUnitProgress(boolean flag) {
+        this.displayJUnitProgress = flag;
+    }
+
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
@@ -62,17 +91,21 @@ public class Config {
         Name("name"),
         Description("description"),
         None("none");
-    
+
         private final String value;
         BuildFailureAnalyzerDisplayedField(String value) {
             this.value = value;
         }
-    
+
         public String getValue() { return value; }
-    
+
         @Override
         public String toString() { return value; }
     }
-    
+
+    public enum DisplayOptions {
+        Always, Never, UserSetting;
+    }
+
     private Comparator<Job<?, ?>> order;
 }

@@ -18,8 +18,14 @@ import org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildAction;
  * @author Daniel Beland
  */
 public class HasBadgesGroovyPostbuildPlugin implements Feature<HasBadgesGroovyPostbuildPlugin.Badges> {
+    
+    private final com.smartcodeltd.jenkinsci.plugins.buildmonitor.Config config;
     private ActionFilter filter = new ActionFilter();
     private JobView job;
+    
+    public HasBadgesGroovyPostbuildPlugin(com.smartcodeltd.jenkinsci.plugins.buildmonitor.Config config) {
+        this.config = config;
+    }
 
     @Override
     public HasBadgesGroovyPostbuildPlugin of(JobView jobView) {
@@ -30,7 +36,8 @@ public class HasBadgesGroovyPostbuildPlugin implements Feature<HasBadgesGroovyPo
 
     @Override
     public Badges asJson() {
-        Iterator<GroovyPostbuildAction> badges = Iterables.filter(job.lastBuild().allDetailsOf(GroovyPostbuildAction.class), filter).iterator();
+        Iterator<GroovyPostbuildAction> badges =
+            Iterables.filter(config.getDisplayBadgesFrom().from(job).allDetailsOf(GroovyPostbuildAction.class), filter).iterator();
 
         return badges.hasNext()
             ? new Badges(badges)

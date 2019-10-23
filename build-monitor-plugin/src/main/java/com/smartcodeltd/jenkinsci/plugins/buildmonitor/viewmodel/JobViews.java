@@ -1,5 +1,6 @@
 package com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel;
 
+import com.smartcodeltd.jenkinsci.plugins.buildmonitor.Config.DisplayOptions;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.facade.StaticJenkinsAPIs;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.features.*;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.features.headline.HeadlineConfig;
@@ -20,6 +21,7 @@ public class JobViews {
     private static final String Badge_Plugin                = "badge";
     private static final String Pipeline                    = "workflow-aggregator";
     private static final String GroovyPostbuildActionClass  = "org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildAction";
+    private static final String Junit_Realtime              = "junit-realtime-test-reporter";
 
     private final StaticJenkinsAPIs jenkins;
     private final com.smartcodeltd.jenkinsci.plugins.buildmonitor.Config config;
@@ -33,6 +35,7 @@ public class JobViews {
         List<Feature> viewFeatures = newArrayList();
 
         // todo: a more elegant way of assembling the features would be nice
+        viewFeatures.add(new HasConfig(config));
         viewFeatures.add(new HasHeadline(new HeadlineConfig(config.shouldDisplayCommitters())));
         viewFeatures.add(new KnowsLastCompletedBuildDetails());
         viewFeatures.add(new KnowsCurrentBuildsDetails());
@@ -45,10 +48,16 @@ public class JobViews {
             viewFeatures.add(new CanBeDiagnosedForProblems(config.getBuildFailureAnalyzerDisplayedField()));
         }
 
-        if (jenkins.hasPlugin(Badge_Plugin)) {
-            viewFeatures.add(new HasBadgesBadgePlugin());
-        } else if (jenkins.hasPlugin(Groovy_Post_Build) && hasGroovyPostbuildActionClass()) {
-            viewFeatures.add(new HasBadgesGroovyPostbuildPlugin());
+        if (config.getDisplayBadges() != DisplayOptions.Never) {
+            if (jenkins.hasPlugin(Badge_Plugin)) {
+                viewFeatures.add(new HasBadgesBadgePlugin(config));
+            } else if (jenkins.hasPlugin(Groovy_Post_Build) && hasGroovyPostbuildActionClass()) {
+                viewFeatures.add(new HasBadgesGroovyPostbuildPlugin(config));
+            }
+        }
+
+        if (config.shouldDisplayJUnitProgress() && jenkins.hasPlugin(Junit_Realtime)) {
+        	viewFeatures.add(new HasJunitRealtime());
         }
 
         boolean isPipelineJob = jenkins.hasPlugin(Pipeline) && job instanceof WorkflowJob;

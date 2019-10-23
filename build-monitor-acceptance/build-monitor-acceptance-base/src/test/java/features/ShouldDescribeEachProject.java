@@ -3,6 +3,7 @@ package features;
 import com.smartcodeltd.jenkinsci.plugins.build_monitor.questions.ProjectWidget;
 import com.smartcodeltd.jenkinsci.plugins.build_monitor.tasks.HaveABuildMonitorViewCreated;
 import environment.JenkinsSandbox;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import hudson.plugins.descriptionsetter.tasks.SetBuildDescription;
 import net.serenitybdd.integration.jenkins.JenkinsInstance;
 import net.serenitybdd.integration.jenkins.environment.rules.InstallPlugins;
@@ -16,6 +17,7 @@ import net.serenitybdd.screenplay.jenkins.tasks.configuration.build_steps.ShellS
 import net.serenitybdd.screenplayx.actions.Navigate;
 import net.thucydides.core.annotations.Managed;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +37,11 @@ public class ShouldDescribeEachProject {
     public JenkinsInstance jenkins = JenkinsSandbox.configure().afterStart(
             InstallPlugins.fromUpdateCenter("description-setter")
     ).create();
+
+    @BeforeClass
+    public static void setupChromeDriver() {
+        WebDriverManager.chromedriver().setup();
+    }
 
     @Before
     public void actorCanBrowseTheWeb() {

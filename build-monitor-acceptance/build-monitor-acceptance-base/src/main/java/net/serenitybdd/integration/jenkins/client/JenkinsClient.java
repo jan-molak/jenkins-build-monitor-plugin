@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -115,7 +114,7 @@ public class JenkinsClient {
         }
     }
 
-    private void safeShutdown() throws Exception {
+    public void safeShutdown() {
         process.getJenkinsLogWatcher().close();
         executeCommand("safe-shutdown");
         process.stop();

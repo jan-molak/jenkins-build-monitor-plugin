@@ -14,9 +14,6 @@ cache:
 
 addons:
   chrome: stable
-  apt:
-    packages:
-      - chromium-chromedriver
 
 services:
   - xvfb

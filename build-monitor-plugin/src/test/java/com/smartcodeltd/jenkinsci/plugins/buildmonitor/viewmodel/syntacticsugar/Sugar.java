@@ -3,6 +3,8 @@ package com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.syntacticsugar
 import com.google.common.base.Supplier;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.Config;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.facade.RelativeLocation;
+import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.features.HasBadgesBadgePlugin;
+import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.features.HasBadgesGroovyPostbuildPlugin;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -21,8 +23,24 @@ public class Sugar {
         return new BuildStateRecipe();
     }
 
+    public static HasBadgesGroovyPostbuildPlugin hasGroovyPostbuildBadges(Config config) {
+        return new HasBadgesGroovyPostbuildPlugin(config);
+    }
+
+    public static HasBadgesGroovyPostbuildPlugin hasGroovyPostbuildBadges(ConfigStateRecipe config) {
+        return new HasBadgesGroovyPostbuildPlugin(config.get());
+    }
+
     public static BadgeGroovyPostbuildRecipe groovyPostbuildBadge() {
         return new BadgeGroovyPostbuildRecipe();
+    }
+    
+    public static HasBadgesBadgePlugin hasBadgePluginBadges(Config config) {
+        return new HasBadgesBadgePlugin(config);
+    }
+
+    public static HasBadgesBadgePlugin hasBadgePluginBadges(ConfigStateRecipe config) {
+        return new HasBadgesBadgePlugin(config.get());
     }
 
     public static BadgeBadgePluginRecipe badgePluginBadge() {
@@ -49,5 +67,9 @@ public class Sugar {
 
     public static Config withDefaultConfig() {
         return new ConfigStateRecipe().get();
+    }
+
+    public static ConfigStateRecipe withConfig() {
+        return new ConfigStateRecipe();
     }
 }

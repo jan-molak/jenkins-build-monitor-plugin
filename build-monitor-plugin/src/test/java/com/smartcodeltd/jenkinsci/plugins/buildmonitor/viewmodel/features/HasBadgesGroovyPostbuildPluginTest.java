@@ -24,7 +24,7 @@ import java.net.URL;
 @PrepareForTest({Jenkins.class, URL.class})
 public class HasBadgesGroovyPostbuildPluginTest {
     private JobView job;
-    
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -39,35 +39,46 @@ public class HasBadgesGroovyPostbuildPluginTest {
 
     @Test
     public void should_support_job_without_badges() throws Exception {
-        job = a(jobView().which(new HasBadgesGroovyPostbuildPlugin()).of(
-                a(job())));
+        job = a(jobView().which(hasGroovyPostbuildBadges(withDefaultConfig())).of(a(job())));
 
         assertThat(serialisedBadgesDetailsOf(job), is(nullValue()));
     }
 
     @Test
     public void should_convert_badges_to_json() throws Exception {
-        job = a(jobView().which(new HasBadgesGroovyPostbuildPlugin()).of(
-            a(job().whereTheLast(build().hasBadgesGroovyPostbuildPlugin(groovyPostbuildBadge().withText("badge1"), groovyPostbuildBadge().withText("badge2"))))));
+        job = a(jobView().which(hasGroovyPostbuildBadges(withDefaultConfig())).of(a(job().whereTheLast(build()
+                .hasBadges(groovyPostbuildBadge().withText("badge1"), groovyPostbuildBadge().withText("badge2"))))));
 
         assertThat(serialisedBadgesDetailsOf(job).value(), hasSize(2));
     }
 
     @Test
     public void should_ignore_badges_with_icon() throws Exception {
-        job = a(jobView().which(new HasBadgesGroovyPostbuildPlugin()).of(
-            a(job().whereTheLast(build().hasBadgesGroovyPostbuildPlugin(groovyPostbuildBadge().withIcon("icon.gif", "badge1"), groovyPostbuildBadge().withText("badge2"))))));
+        job = a(jobView().which(hasGroovyPostbuildBadges(withDefaultConfig()))
+                .of(a(job().whereTheLast(build().hasBadges(groovyPostbuildBadge().withIcon("icon.gif", "badge1"),
+                        groovyPostbuildBadge().withText("badge2"))))));
 
         assertThat(serialisedBadgesDetailsOf(job).value(), hasSize(1));
     }
 
     @Test
     public void should_report_badges_from_latest_build() throws Exception {
-        job = a(jobView().which(new HasBadgesGroovyPostbuildPlugin()).of(
-                a(job().whereTheLast(build().isStillBuilding().hasBadgesGroovyPostbuildPlugin(groovyPostbuildBadge().withText("badge1")))
-                        .andThePrevious(build().hasBadgesGroovyPostbuildPlugin(groovyPostbuildBadge().withText("badge1"), groovyPostbuildBadge().withText("badge2"))))));
+        job = a(jobView().which(hasGroovyPostbuildBadges(withDefaultConfig()))
+                .of(a(job().whereTheLast(build().isStillBuilding().hasBadges(groovyPostbuildBadge().withText("badge1")))
+                        .andThePrevious(build().hasBadges(groovyPostbuildBadge().withText("badge1"),
+                                groovyPostbuildBadge().withText("badge2"))))));
 
         assertThat(serialisedBadgesDetailsOf(job).value(), hasSize(1));
+    }
+
+    @Test
+    public void should_report_badges_from_last_completed_build() throws Exception {
+        job = a(jobView().which(hasGroovyPostbuildBadges(withConfig().withBadgesFromLastCompletedBuild()))
+                .of(a(job().whereTheLast(build().isStillBuilding().hasBadges(groovyPostbuildBadge().withText("badge1")))
+                        .andThePrevious(build().hasBadges(groovyPostbuildBadge().withText("badge1"),
+                                groovyPostbuildBadge().withText("badge2"))))));
+
+        assertThat(serialisedBadgesDetailsOf(job).value(), hasSize(2));
     }
 
     private HasBadgesGroovyPostbuildPlugin.Badges serialisedBadgesDetailsOf(JobView job) {
