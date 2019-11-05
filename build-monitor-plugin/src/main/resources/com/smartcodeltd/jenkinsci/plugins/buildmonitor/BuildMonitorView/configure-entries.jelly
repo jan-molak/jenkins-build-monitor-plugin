@@ -57,16 +57,24 @@
     <f:textbox name="title" value="${it.title}"/>
   </f:entry>
 
-  <f:entry title="${%Ordered by}">
-    <select name="order" class="setting-input">
-      <f:option value="ByName" selected='${it.currentOrder()=="ByName"}'>${%Name}</f:option>
-      <f:option value="ByDisplayName" selected="${it.currentOrder()=='ByDisplayName'}">${%Display name}</f:option>
-      <f:option value="ByFullName" selected="${it.currentOrder()=='ByFullName'}">${%Full name}</f:option>
-      <f:option value="ByStatus" selected="${it.currentOrder()=='ByStatus'}">${%Status}</f:option>
-      <f:option value="ByLastBuildTime" selected="${it.currentOrder()=='ByLastBuildTime'}">${%Last build time}</f:option>
-      <f:option value="ByEstimatedDuration" selected="${it.currentOrder()=='ByEstimatedDuration'}">${%Estimated duration}</f:option>
-    </select>
-  </f:entry>
+  <f:radioBlock title="${%Sort jobs}" name="order" checked="${it.currentOrder()!='ExplicitOrder'}" value="sorted">
+    <f:entry title="${%Ordered by}">
+      <select name="orderSelect" class="setting-input">
+        <f:option value="ByName" selected='${it.currentOrder()=="ByName"}'>${%Name}</f:option>
+        <f:option value="ByDisplayName" selected="${it.currentOrder()=='ByDisplayName'}">${%Display name}</f:option>
+        <f:option value="ByFullName" selected="${it.currentOrder()=='ByFullName'}">${%Full name}</f:option>
+        <f:option value="ByStatus" selected="${it.currentOrder()=='ByStatus'}">${%Status}</f:option>
+        <f:option value="ByLastBuildTime" selected="${it.currentOrder()=='ByLastBuildTime'}">${%Last build time}</f:option>
+        <f:option value="ByEstimatedDuration" selected="${it.currentOrder()=='ByEstimatedDuration'}">${%Estimated duration}</f:option>
+      </select>
+    </f:entry>
+  </f:radioBlock>
+
+  <f:radioBlock title="${%Specify order}" name="order" checked="${it.currentOrder()=='ExplicitOrder'}" value="explicit">
+    <f:entry title="${%Order of jobs:}" help="${descriptor.getHelpFile('explicitOrder')}">
+      <f:textbox name="explicitOrder" field="explicitOrder" value="${it.explicitOrder()}" />
+    </f:entry>
+  </f:radioBlock>
 
   </f:section>
 
