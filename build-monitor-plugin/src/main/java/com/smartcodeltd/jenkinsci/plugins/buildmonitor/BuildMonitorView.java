@@ -92,8 +92,13 @@ public class BuildMonitorView extends ListView {
     }
 
     @SuppressWarnings("unused") // used in the configure-entries.jelly form
-    public boolean isDisplayCommitters() {
-        return currentConfig().shouldDisplayCommitters();
+    public boolean isDisplayCommittersOnBuildFailure() {
+        return currentConfig().shouldDisplayCommittersOnBuildFailure();
+    }
+
+    @SuppressWarnings("unused") // used in the configure-entries.jelly form
+    public boolean isDisplayCommittersOnFixedBuild() {
+        return currentConfig().shouldDisplayCommittersOnFixedBuild();
     }
 
     private static final BuildMonitorInstallation installation = new BuildMonitorInstallation();
@@ -123,9 +128,10 @@ public class BuildMonitorView extends ListView {
             String requestedOrdering = req.getParameter("order");
             title                    = req.getParameter("title");
 
-            currentConfig().setDisplayCommitters(json.optBoolean("displayCommitters", true));
+            currentConfig().setDisplayCommittersOnBuildFailure(json.optBoolean("displayCommittersOnBuildFailure", true));
+            currentConfig().setDisplayCommittersOnFixedBuild(json.optBoolean("displayCommittersOnFixedBuild", true));
             currentConfig().setBuildFailureAnalyzerDisplayedField(req.getParameter("buildFailureAnalyzerDisplayedField"));
-            
+
             try {
                 currentConfig().setOrder(orderIn(requestedOrdering));
             } catch (Exception e) {

@@ -24,7 +24,7 @@ public class HeadlineOfFixed implements CandidateHeadline {
 
     @Override
     public boolean isApplicableTo(JobView job) {
-        return didTheJobJustGetFixedWith(job.lastCompletedBuild());
+        return didTheJobJustGetFixedWith(job.lastCompletedBuild()) && config.displayCommittersOnFixedBuild;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class HeadlineOfFixed implements CandidateHeadline {
     private String textFor(BuildViewModel lastBuild) {
 
         return Lister.describe(
-                "Back in the green!",
+                "",
                 "Fixed after %s committed their changes :-)",
                 newLinkedList(committersOf(lastBuild))
         );
@@ -51,7 +51,7 @@ public class HeadlineOfFixed implements CandidateHeadline {
     }
 
     private Set<String> committersOf(BuildViewModel build) {
-        return config.displayCommitters
+        return config.displayCommittersOnFixedBuild
                 ? build.committers()
                 : Sets.<String>newHashSet();
     }

@@ -35,7 +35,7 @@ public class HeadlineOfAborted implements CandidateHeadline {
     private String text(BuildViewModel build) {
         Optional<InterruptedBuildAction> interruption = build.detailsOf(InterruptedBuildAction.class);
 
-        if (config.displayCommitters && interruption.isPresent()) {
+        if (config.displayCommittersOnBuildFailure && interruption.isPresent()) {
 
             Optional<String> username = userResponsibleFor(interruption.get());
 

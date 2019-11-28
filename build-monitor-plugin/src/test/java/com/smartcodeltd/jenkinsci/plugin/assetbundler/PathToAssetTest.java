@@ -7,8 +7,7 @@ import org.junit.rules.ExpectedException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static junit.framework.TestCase.assertTrue;
 
 public class PathToAssetTest {
 
@@ -17,8 +16,10 @@ public class PathToAssetTest {
         URL base = baseResourceUrlGivenByJenkins("file:///opt/jenkins/plugins/build-monitor-plugin/");
 
         PathToAsset path = new PathToAsset(base, "less/index.less");
-
-        assertThat(absolute(path), is("/opt/jenkins/plugins/build-monitor-plugin/less/index.less"));
+        //Tweaking it to be able to run on Windows
+        String actualValue = absolute(path).replace("\\", "/");
+        String expectedValue = "/opt/jenkins/plugins/build-monitor-plugin/less/index.less";
+        assertTrue("\nActual: " + actualValue + " \n does not contain expected value : " + expectedValue, actualValue.contains(expectedValue));
     }
 
     @Test
@@ -26,8 +27,10 @@ public class PathToAssetTest {
         URL base = baseResourceUrlGivenByJenkins("file://server/jenkins/plugins/build-monitor-plugin/");
 
         PathToAsset path = new PathToAsset(base, "less/index.less");
-
-        assertThat(absolute(path), is("/server/jenkins/plugins/build-monitor-plugin/less/index.less"));
+        //Tweaking it to be able to run on Windows
+        String actualValue = absolute(path).replace("\\", "/");
+        String expectedValue = "/server/jenkins/plugins/build-monitor-plugin/less/index.less";
+        assertTrue("\nActual: " + actualValue + " \n does not contain expected value : " + expectedValue, actualValue.contains(expectedValue));
     }
 
     @Rule public ExpectedException thrown = ExpectedException.none();

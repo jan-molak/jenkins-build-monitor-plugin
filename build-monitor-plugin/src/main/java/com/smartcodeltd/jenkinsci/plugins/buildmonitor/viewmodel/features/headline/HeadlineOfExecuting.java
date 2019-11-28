@@ -37,7 +37,7 @@ public class HeadlineOfExecuting implements CandidateHeadline {
     }
 
     private Set<String> committersOf(BuildViewModel build) {
-        return config.displayCommitters
+        return config.displayCommittersOnBuildFailure
                 ? build.committers()
                 : Sets.<String>newHashSet();
     }

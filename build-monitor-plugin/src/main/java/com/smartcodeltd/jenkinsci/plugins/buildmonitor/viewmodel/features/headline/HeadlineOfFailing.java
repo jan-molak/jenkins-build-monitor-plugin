@@ -80,7 +80,7 @@ public class HeadlineOfFailing implements CandidateHeadline {
     }
 
     private Set<String> responsibleFor(BuildViewModel build) {
-        return config.displayCommitters
+        return config.displayCommittersOnBuildFailure
                 ? build.culprits()
                 : Sets.<String>newHashSet();
     }

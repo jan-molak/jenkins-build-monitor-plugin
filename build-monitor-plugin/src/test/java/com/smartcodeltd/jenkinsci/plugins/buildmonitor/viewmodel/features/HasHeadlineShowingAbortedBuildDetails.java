@@ -51,11 +51,11 @@ public class HasHeadlineShowingAbortedBuildDetails {
     // --
 
     private Feature hasHeadlineThatShowsCommitters() {
-        return new HasHeadline(new HeadlineConfig(true));
+        return new HasHeadline(new HeadlineConfig(true, false));
     }
 
     private Feature hasHeadlineThatDoesNotShowCommitters() {
-        return new HasHeadline(new HeadlineConfig(false));
+        return new HasHeadline(new HeadlineConfig(false, false));
     }
 
     private String headlineOf(JobView job) {

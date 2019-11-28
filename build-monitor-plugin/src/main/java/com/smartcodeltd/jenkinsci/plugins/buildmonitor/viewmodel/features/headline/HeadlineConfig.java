@@ -4,9 +4,12 @@ package com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.features.headl
  * @author Jan Molak
  */
 public class HeadlineConfig {
-    public final boolean displayCommitters;
+    public final boolean displayCommittersOnBuildFailure;
+    public final boolean displayCommittersOnFixedBuild;
 
-    public HeadlineConfig(boolean displayCommitters) {
-        this.displayCommitters = displayCommitters;
+    public HeadlineConfig(boolean displayCommittersOnBuildFailure, boolean displayCommittersOnFixedBuild) {
+
+        this.displayCommittersOnBuildFailure = displayCommittersOnBuildFailure;
+        this.displayCommittersOnFixedBuild = displayCommittersOnFixedBuild;
     }
 }

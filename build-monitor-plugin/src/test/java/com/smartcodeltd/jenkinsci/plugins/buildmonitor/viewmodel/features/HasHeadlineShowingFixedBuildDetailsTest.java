@@ -55,7 +55,7 @@ public class HasHeadlineShowingFixedBuildDetailsTest {
                 a(job().whereTheLast(build().succeededThanksTo()).
                         andThePrevious(build().wasBrokenBy("Daniel", "Ben")))));
 
-        assertThat(headlineOf(view), is("Back in the green!"));
+        assertThat(headlineOf(view), is(""));
     }
 
     @Test
@@ -64,7 +64,7 @@ public class HasHeadlineShowingFixedBuildDetailsTest {
                 a(job().whereTheLast(build().succeededThanksTo("Adam")).
                         andThePrevious(build().wasBrokenBy("Daniel", "Ben")))));
 
-        assertThat(headlineOf(view), is("Back in the green!"));
+        assertThat(headlineOf(view), is(""));
     }
 
     @Test
@@ -87,11 +87,11 @@ public class HasHeadlineShowingFixedBuildDetailsTest {
     // --
 
     private Feature hasHeadlineThatShowsCommitters() {
-        return new HasHeadline(new HeadlineConfig(true));
+        return new HasHeadline(new HeadlineConfig(true, true));
     }
 
     private Feature hasHeadlineThatDoesNotShowCommitters() {
-        return new HasHeadline(new HeadlineConfig(false));
+        return new HasHeadline(new HeadlineConfig(false, false));
     }
 
     private String headlineOf(JobView job) {

@@ -72,8 +72,12 @@
 
   <f:section title="${%Build Monitor - Widget Settings}">
 
-    <f:entry title="${%Display committers}" help="${descriptor.getHelpFile('displayCommitters')}">
-      <f:checkbox id="displayCommitters" field="displayCommitters" />
+    <f:entry title="${%Display committers on build failure}" help="${descriptor.getHelpFile('displayCommitters')}">
+      <f:checkbox id="displayCommittersOnBuildFailure" field="displayCommittersOnBuildFailure" />
+    </f:entry>
+
+    <f:entry title="${%Display committers on build fix}"}">
+          <f:checkbox id="displayCommittersOnFixedBuild" field="displayCommittersOnFixedBuild" />
     </f:entry>
 
     <f:entry title="${%Failure Analyzer Plugin: Field to display}" help="${descriptor.getHelpFile('buildFailureAnalyzerDisplayedField')}">
