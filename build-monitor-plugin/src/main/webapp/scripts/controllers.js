@@ -41,10 +41,9 @@ angular.
             function fontSizeFor(itemsOnScreen, numberOfColumns) {
                 var baseFontSizePercentage  = 5,
                     itemsCount    = itemsOnScreen && itemsOnScreen.length || 1,
-                    actualColumns = Math.min(itemsCount, numberOfColumns),
-                    actualRows    = Math.ceil(itemsCount / actualColumns);
+                    actualColumns = Math.min(itemsCount, numberOfColumns);
 
-                return (baseFontSizePercentage / Math.max(actualRows, actualColumns));
+                return (baseFontSizePercentage / actualColumns);
             }
         }]).
 
