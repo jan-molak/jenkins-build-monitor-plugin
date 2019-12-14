@@ -1,5 +1,6 @@
 package com.smartcodeltd.jenkinsci.plugins.buildmonitor.pipeline;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.jenkinsci.plugins.workflow.cps.nodes.StepStartNode;
 import org.jenkinsci.plugins.workflow.graph.FlowNode;
@@ -22,7 +23,7 @@ public class WorkflowNodeTraversal extends BreadthFirstNodeTraversal<FlowNode> {
     }
 
     @Override
-    protected Collection<FlowNode> getParents(FlowNode node) {
+    protected Collection<FlowNode> getParents(@NonNull FlowNode node) {
         return node.getParents();
     }
 }
