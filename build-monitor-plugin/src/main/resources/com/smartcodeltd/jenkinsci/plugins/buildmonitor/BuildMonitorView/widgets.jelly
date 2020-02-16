@@ -16,7 +16,6 @@
         >
             <span class="value">{{project.progress}}%</span>
         </div>
-
         <header>
             <h2>
                 <a title="{{project.name}}"
@@ -43,6 +42,9 @@
                           data-ng-style="{ 'border': badge.border + ' solid ' + badge.borderColor, 'background': badge.background, 'color': badge.color }">
                         {{ badge.text }}
                     </span>
+                </li>
+                <li style="color:#EC644B" data-ng-show="project.upStreamError.length >0 &amp;&amp; settings.displayWarnings == 1">
+                    {{project.upStreamError}}
                 </li>
             </ul>
         </header>

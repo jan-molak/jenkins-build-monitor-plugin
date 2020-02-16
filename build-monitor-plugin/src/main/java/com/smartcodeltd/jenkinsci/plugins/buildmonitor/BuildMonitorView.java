@@ -29,6 +29,7 @@ import com.smartcodeltd.jenkinsci.plugins.buildmonitor.installation.BuildMonitor
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.JobView;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.JobViews;
 import hudson.Extension;
+import hudson.model.AbstractProject;
 import hudson.model.Descriptor.FormException;
 import hudson.model.Job;
 import hudson.model.ListView;
@@ -152,12 +153,17 @@ public class BuildMonitorView extends ListView {
     }
 
     private List<JobView> jobViews() {
-        JobViews views = new JobViews(new StaticJenkinsAPIs(), currentConfig());
-
         //A little bit of evil to make the type system happy.
         @SuppressWarnings("unchecked")
         List<Job<?, ?>> projects = new ArrayList(filter(super.getItems(), Job.class));
+
+        //start of sin
+        @SuppressWarnings("unchecked")
+        List<AbstractProject<?, ?>> ExportedProjectsToJobViews = new ArrayList(filter(super.getItems(), Job.class));
+        //end if sin.
         List<JobView> jobs = new ArrayList<JobView>();
+        //Dear code reviewer, forgive me for what I have done.
+        JobViews views = new JobViews(new StaticJenkinsAPIs(), currentConfig(),ExportedProjectsToJobViews);
 
         Collections.sort(projects, currentConfig().getOrder());
 
@@ -202,7 +208,6 @@ public class BuildMonitorView extends ListView {
     private void migrateFromOldToNewConfigFormat() {
         Config c = new Config();
         c.setOrder(order);
-
         config = c;
         order = null;
     }

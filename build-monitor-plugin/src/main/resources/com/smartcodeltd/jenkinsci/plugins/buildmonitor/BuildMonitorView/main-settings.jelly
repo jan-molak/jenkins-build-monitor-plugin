@@ -29,6 +29,13 @@
                     <label for="settings-colour-blind" title="Applies a colour blind-friendly colour scheme">Colour blind mode?</label>
                 </li>
                 <li class="settings-option">
+                    <input ng-model="settings.displayWarnings"
+                           ng-false-value="'0'"
+                           ng-true-value="'1'"
+                           id="settings-displayWarnings" type="checkbox" />
+                    <label for="settings-displayWarnings" title="shows wanrings if a job in upstream has failed or is blocked to its children.">Alert if upstream job has error?</label>
+                </li>
+                <li class="settings-option">
                     <input ng-model="settings.reduceMotion"
                            ng-false-value="'0'"
                            ng-true-value="'1'"
