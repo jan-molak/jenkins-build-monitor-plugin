@@ -184,7 +184,7 @@
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>badge</artifactId>
-            <version>1.2</version>
+            <version>1.8</version>
             <optional>true</optional>
         </dependency>
         <dependency>
