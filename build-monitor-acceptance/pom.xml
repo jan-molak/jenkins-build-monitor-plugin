@@ -15,7 +15,7 @@
 
     <properties>
         <encoding>UTF-8</encoding>
-        <serenity.version>2.0.56</serenity.version>
+        <serenity.version>2.1.7</serenity.version>
         <aether.version>1.0.0.v20140518</aether.version>
 
         <webdriver.driver>chrome</webdriver.driver>
