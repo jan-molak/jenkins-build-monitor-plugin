@@ -56,7 +56,7 @@
         <npm-executable>npm</npm-executable>
         <selenium.version>2.43.0</selenium.version>
         <build.number>DEV</build.number>
-        <configuration-as-code.version>1.32</configuration-as-code.version>
+        <configuration-as-code.version>1.34</configuration-as-code.version>
     </properties>
 
     <profiles>
