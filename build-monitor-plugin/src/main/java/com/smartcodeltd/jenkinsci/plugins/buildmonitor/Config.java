@@ -10,6 +10,7 @@ import static com.smartcodeltd.jenkinsci.plugins.buildmonitor.functions.NullSafe
 
 public class Config {
 
+    private boolean displayClusterTitle;
     private boolean displayCommitters;
     private BuildFailureAnalyzerDisplayedField buildFailureAnalyzerDisplayedField;
     
@@ -40,7 +41,15 @@ public class Config {
     public void setBuildFailureAnalyzerDisplayedField(String buildFailureAnalyzerDisplayedField) {
         this.buildFailureAnalyzerDisplayedField = BuildFailureAnalyzerDisplayedField.valueOf(buildFailureAnalyzerDisplayedField);
     }
-    
+
+    public boolean shouldDisplayClusterTitle() {
+        return getOrElse(displayClusterTitle, false);
+    }
+
+    public void setDisplayClusterTitle(boolean flag) {
+        this.displayClusterTitle = flag;
+    }
+
     public boolean shouldDisplayCommitters() {
         return getOrElse(displayCommitters, true);
     }

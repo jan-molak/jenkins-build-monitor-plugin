@@ -58,7 +58,7 @@
   </f:entry>
 
   <f:entry title="${%Ordered by}">
-    <select name="order" class="setting-input">
+    <select name="order" id="orderSelection" class="setting-input" onchange="adjustVisibilityOfOrdinalSet()">
       <f:option value="ByName" selected='${it.currentOrder()=="ByName"}'>${%Name}</f:option>
       <f:option value="ByDisplayName" selected="${it.currentOrder()=='ByDisplayName'}">${%Display name}</f:option>
       <f:option value="ByFullName" selected="${it.currentOrder()=='ByFullName'}">${%Full name}</f:option>
@@ -66,6 +66,14 @@
       <f:option value="ByLastBuildTime" selected="${it.currentOrder()=='ByLastBuildTime'}">${%Last build time}</f:option>
       <f:option value="ByEstimatedDuration" selected="${it.currentOrder()=='ByEstimatedDuration'}">${%Estimated duration}</f:option>
     </select>
+  </f:entry>
+
+  <f:entry title="${%Advanced order with ordinal set}" help="${descriptor.getHelpFile('ordinalSet')}">
+    <f:textbox name="ordinalSet" value="${it.currentOrdinalSet()}"/>
+  </f:entry>
+
+  <f:entry title="${%Display title bar to job clusters}" help="${descriptor.getHelpFile('displayClusterTitle')}">
+    <f:checkbox id="displayClusterTitle" field="displayClusterTitle" />
   </f:entry>
 
   </f:section>
@@ -97,6 +105,18 @@
         }
       });
     }());
+
+    function adjustVisibilityOfOrdinalSet() {
+        var selectedOrder = $('orderSelection').value;
+        var ordinalSetRow = $$('input[name="ordinalSet"]').first().parentNode.parentNode;
+        if (selectedOrder === 'ByFullName') {
+          ordinalSetRow.show();
+        } else {
+          ordinalSetRow.hide();
+        }
+    }
+
+    adjustVisibilityOfOrdinalSet();
   </script>
 
 </j:jelly>

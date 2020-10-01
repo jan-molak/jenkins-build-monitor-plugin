@@ -48,6 +48,6 @@ public class JobViewRecipe implements Supplier<JobView> {
 
     @Override
     public JobView get() {
-        return new JobView(job, features, isPipeline, relative, systemTime);
+        return new JobView(job, features, isPipeline, relative, systemTime, false);
     }
 }

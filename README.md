@@ -57,6 +57,7 @@ Simple, right? :-) You can have as many Build Monitor Views as you want - the mo
 ![Three columns view](docs/2_Three_columns_view.png)
 ![Supports Claim and Build Failure Analyzer plugins](docs/3_Two_columns_view_with_claim_and_build_failure_analyzer_plugins.png)
 ![Colour-blind mode](docs/4_Colour_blind_mode.png)
+![Job Clustering and Advanced_Ordering](docs/5_Job_clustering_and_advanced_ordering.png)
 
 ## Roadmap and work in progress
 

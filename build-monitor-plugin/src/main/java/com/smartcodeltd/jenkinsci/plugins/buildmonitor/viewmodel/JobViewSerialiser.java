@@ -15,6 +15,7 @@ public class JobViewSerialiser extends JsonSerializer<JobView> {
     public void serialize(JobView job, JsonGenerator jgen, SerializerProvider provider) throws IOException {
         jgen.writeStartObject();
         jgen.writeObjectField("name",               job.name());
+        jgen.writeObjectField("isClusterTitle",     job instanceof ClusterTitleJobView);
         jgen.writeObjectField("url",                job.url());
         jgen.writeObjectField("status",             job.status());
         jgen.writeObjectField("hashCode",           job.hashCode());

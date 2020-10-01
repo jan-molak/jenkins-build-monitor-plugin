@@ -53,7 +53,7 @@ public class JobViews {
 
         boolean isPipelineJob = jenkins.hasPlugin(Pipeline) && job instanceof WorkflowJob;
 
-        return JobView.of(job, viewFeatures, isPipelineJob);
+        return JobView.of(job, viewFeatures, isPipelineJob, config.shouldDisplayClusterTitle());
     }
 
     private boolean hasGroovyPostbuildActionClass() {

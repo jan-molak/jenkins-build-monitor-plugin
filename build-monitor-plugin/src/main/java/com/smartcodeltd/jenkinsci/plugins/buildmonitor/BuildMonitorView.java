@@ -26,8 +26,11 @@ package com.smartcodeltd.jenkinsci.plugins.buildmonitor;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.api.Respond;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.facade.StaticJenkinsAPIs;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.installation.BuildMonitorInstallation;
+import com.smartcodeltd.jenkinsci.plugins.buildmonitor.order.ByFullName;
+import com.smartcodeltd.jenkinsci.plugins.buildmonitor.order.ByFullName.OrdinalSet;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.JobView;
 import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.JobViews;
+import com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel.ClusterTitleJobView;
 import hudson.Extension;
 import hudson.model.Descriptor.FormException;
 import hudson.model.Job;
@@ -86,9 +89,23 @@ public class BuildMonitorView extends ListView {
         return currentConfig().getOrder().getClass().getSimpleName();
     }
     
+   @SuppressWarnings("unused") // used in the configure-entries.jelly form
+    public String currentOrdinalSet() {
+       if (currentConfig().getOrder() instanceof ByFullName) {
+           return ((ByFullName) currentConfig().getOrder()).getOrdinalSet().toParameter();
+       } else {
+           return "";
+       }
+    }
+
     @SuppressWarnings("unused") // used in the configure-entries.jelly form
     public String currentbuildFailureAnalyzerDisplayedField() {
         return currentConfig().getBuildFailureAnalyzerDisplayedField().getValue();
+    }
+
+    @SuppressWarnings("unused") // used in the configure-entries.jelly form
+    public boolean isDisplayClusterTitle() {
+        return currentConfig().shouldDisplayClusterTitle();
     }
 
     @SuppressWarnings("unused") // used in the configure-entries.jelly form
@@ -123,11 +140,17 @@ public class BuildMonitorView extends ListView {
             String requestedOrdering = req.getParameter("order");
             title                    = req.getParameter("title");
 
+            currentConfig().setDisplayClusterTitle(json.optBoolean("displayClusterTitle", true));
             currentConfig().setDisplayCommitters(json.optBoolean("displayCommitters", true));
             currentConfig().setBuildFailureAnalyzerDisplayedField(req.getParameter("buildFailureAnalyzerDisplayedField"));
             
             try {
-                currentConfig().setOrder(orderIn(requestedOrdering));
+                Comparator<Job<?, ?>> jobComparator = orderIn(requestedOrdering);
+                if (jobComparator instanceof ByFullName) {
+                    OrdinalSet ordinalSet = OrdinalSet.fromParameter(req.getParameter("ordinalSet"));
+                    ((ByFullName) jobComparator).setOrdinalSet(ordinalSet);
+                }
+                currentConfig().setOrder(jobComparator);
             } catch (Exception e) {
                 throw new FormException("Can't order projects by " + requestedOrdering, "order");
             }
@@ -161,11 +184,25 @@ public class BuildMonitorView extends ListView {
 
         Collections.sort(projects, currentConfig().getOrder());
 
+        String currentClusterTitle = null;
         for (Job project : projects) {
-            jobs.add(views.viewOf(project));
+            JobView job = views.viewOf(project);
+            if (config.shouldDisplayClusterTitle() && !getClusterTitle(project).equals(currentClusterTitle)) {
+                jobs.add(ClusterTitleJobView.create(project.getParent()));
+                currentClusterTitle = getClusterTitle(project);
+            }
+            jobs.add(job);
         }
 
         return jobs;
+    }
+
+    /**
+     * @return job title which consists of the name of the top level folder.
+     */
+    private static String getClusterTitle(Job job) {
+        String fullName = job.getFullName();
+        return fullName.substring(0, fullName.indexOf('/') + 1);
     }
 
     /**

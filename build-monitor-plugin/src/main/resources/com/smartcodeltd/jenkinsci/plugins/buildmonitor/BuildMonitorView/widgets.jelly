@@ -3,53 +3,61 @@
     data-viewport-units=""
     data-ng-style="{ 'font-size': (fontSize * settings.fontSize) + vmax}"
     class="columns-{{ settings.numberOfColumns }}">
-
     <li ng-repeat="project in jobs track by project.hashCode"
-        class="{{ project.status }} basic project widget"
+        class="{{ project.status }} basic project widget {{ project.isClusterTitle ? 'clusterTitle' : '' }}"
         data-ng-class="{ 'claimed': !! project.claim.active }"
         id="{{ project.name | slugify }}"
     >
-        <div class="progress"
-             data-ng-if="project.estimatedDuration &amp;&amp; project.progress &gt; 0"
-             animate-on-change="project.lastCompletedBuild.timeElapsedSince"
-             data-ng-style="{ 'width': project.progress + '%' }"
-        >
-            <span class="value">{{project.progress}}%</span>
+        <div ng-if="project.isClusterTitle" class="title">
+            <header>
+                <h2>
+                    <a title="{{project.name}}" href="{{project.url}}">{{project.name}}</a>
+                </h2>
+            </header>
         </div>
+        <div ng-if="!project.isClusterTitle">
+            <div class="progress"
+                 data-ng-if="project.estimatedDuration &amp;&amp; project.progress &gt; 0"
+                 animate-on-change="project.lastCompletedBuild.timeElapsedSince"
+                 data-ng-style="{ 'width': project.progress + '%' }"
+            >
+                <span class="value">{{project.progress}}%</span>
+            </div>
 
-        <header>
-            <h2>
-                <a title="{{project.name}}"
-                   href="{{project.url}}">{{project.name}}</a>
-            </h2>
-            <ul class="details">
-                <li data-ng-show="!  project.claim.active">{{ project.headline }}</li>
-                <li data-ng-show="!! project.lastCompletedBuild.description" class="build-description description-setter-plugin"
-                    ng-bind-html="project.lastCompletedBuild.description" />
-                <li data-ng-show="!! project.claim.active" class="claim-plugin">Claimed by <strong>{{ project.claim.author }}</strong>: {{ project.claim.reason }}</li>
-                <li data-ng-show="!! project.problems &amp;&amp; project.problems.length > 0" class="build-failure-analyzer-plugin possible-failure-cause">
-                    <span>
-                        <ng-pluralize
-                            count="project.problems.length"
-                            when="{'1': 'Identified problem: ', 'other': '{{ project.problems.length }} identified problems: '}"></ng-pluralize>
-                    </span>
-                    <ul class="identified-failures">
-                        <li data-ng-repeat="name in project.problems">{{ name }}</li>
-                    </ul>
-                </li>
-                <li data-ng-show="settings.showBadges == 1 &amp;&amp; !!project.badges" class="badges">
-                    <span class="badge"
-                          data-ng-repeat="badge in project.badges track by $index"
-                          data-ng-style="{ 'border': badge.border + ' solid ' + badge.borderColor, 'background': badge.background, 'color': badge.color }">
-                        {{ badge.text }}
-                    </span>
-                </li>
-            </ul>
-        </header>
+            <header>
+                <h2>
+                    <a title="{{project.name}}"
+                       href="{{project.url}}">{{project.name}}</a>
+                </h2>
+                <ul class="details">
+                    <li data-ng-show="!  project.claim.active">{{ project.headline }}</li>
+                    <li data-ng-show="!! project.lastCompletedBuild.description" class="build-description description-setter-plugin"
+                        ng-bind-html="project.lastCompletedBuild.description" />
+                    <li data-ng-show="!! project.claim.active" class="claim-plugin">Claimed by <strong>{{ project.claim.author }}</strong>: {{ project.claim.reason }}</li>
+                    <li data-ng-show="!! project.problems &amp;&amp; project.problems.length > 0" class="build-failure-analyzer-plugin possible-failure-cause">
+                        <span>
+                            <ng-pluralize
+                                    count="project.problems.length"
+                                    when="{'1': 'Identified problem: ', 'other': '{{ project.problems.length }} identified problems: '}"></ng-pluralize>
+                        </span>
+                        <ul class="identified-failures">
+                            <li data-ng-repeat="name in project.problems">{{ name }}</li>
+                        </ul>
+                    </li>
+                    <li data-ng-show="settings.showBadges == 1 &amp;&amp; !!project.badges" class="badges">
+                        <span class="badge"
+                              data-ng-repeat="badge in project.badges track by $index"
+                              data-ng-style="{ 'border': badge.border + ' solid ' + badge.borderColor, 'background': badge.background, 'color': badge.color }">
+                            {{ badge.text }}
+                        </span>
+                    </li>
+                </ul>
+            </header>
 
-        <div class="slots">
-            <slot name="1" expansion="build-number" project="project" />
-            <slot name="2" expansion="build-time"   project="project" />
+            <div class="slots">
+                <slot name="1" expansion="build-number" project="project" />
+                <slot name="2" expansion="build-time"   project="project" />
+            </div>
         </div>
     </li>
 </ul>
