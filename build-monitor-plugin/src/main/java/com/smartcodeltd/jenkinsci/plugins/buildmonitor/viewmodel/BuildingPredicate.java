@@ -1,6 +1,6 @@
 package com.smartcodeltd.jenkinsci.plugins.buildmonitor.viewmodel;
 
-import com.google.common.base.Predicate;
+import java.util.function.Predicate;
 import hudson.model.Run;
 
 import javax.annotation.Nullable;
@@ -13,7 +13,7 @@ public final class BuildingPredicate implements Predicate<Run<?, ?>> {
 	}
 	
 	@Override
-	public boolean apply(@Nullable Run<?, ?> run) {
+	public boolean test(@Nullable Run<?, ?> run) {
 		if (run == null) {
 			throw new RuntimeException("Run was null");
 		}
